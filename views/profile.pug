@@ -10,8 +10,9 @@ block container
 			|	This is a place to see secrets of #{user}. You get to see a new secret of #{user}s everytime #{user} overspends.
 			
 		each item in secrets
-			.card.cardthang
-				.card-block
-					h4.card-title #{item.secret}
-					h6.card-subtitle.mb-2.text-muted #{item.date}
-					p.card-text #{item.cause}
+			if item.exposed
+				.card.cardthang
+					.card-block
+						h4.card-title #{item.secret}
+						h6.card-subtitle.mb-2.text-muted #{item.date}
+						p.card-text #{item.cause}
