@@ -72,6 +72,7 @@ app.get("/monzo-connect", function(req, res) {
     }
 });
 
+/*
 app.get("/", function(req, res) {
     isValidToken(accessToken)
     .then(function() {
@@ -104,6 +105,7 @@ app.get("/", function(req, res) {
         res.send("your token sucks");
     })
 });
+*/
 
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/public'));

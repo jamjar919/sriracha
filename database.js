@@ -65,8 +65,23 @@ module.exports.addNewSecret = function(username, friendname, secret) {
 module.exports.getFriends = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
-            var user = db.collection('users').findOne({username:username});
-            resolve(user.friends);
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                console.log(data);
+                resolve(data.friends);  
+            })
+        });
+    });
+}
+
+module.exports.getSecrets = function(username) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                console.log(data);
+                resolve(data.secrets);  
+            })
         });
     });
 }
