@@ -4,12 +4,18 @@ var express = require('express');
 const pug = require('pug');
 var app = express();
 const server = require('http').Server(app);
+var request = require('request');
 
 // manage views
 app.set('views', __dirname + '/views')
 app.engine('pug', require('pug').__express)
 app.set('view engine', 'pug')
 app.locals.basedir = __dirname + '/views';
+
+// Monzo Secret
+var MonzoKeys = require('./monzosecret.json');
+const MONZO_CLIENT_ID = MonzoKeys.client_id;
+const MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
 
 // Mongo
 var MongoClient = require('mongodb').MongoClient;
@@ -108,6 +114,26 @@ function isValidToken(token) {
     });
 }
 
+app.get("/monzo-connect", function(req, res) {
+    if (req.query.hasOwnProperty("code")) {
+        var code = req.query.code;
+        request.post('https://api.monzo.com/oauth2/token', {form:{
+            grant_type:"authorization_code",
+            client_id: MONZO_CLIENT_ID,
+            client_secret: MONZO_CLIENT_SECRET,
+            redirect_uri: "/monzo-connect",
+            code: code
+        }}, function (error, response, body) {
+            if (body.hasOwnProperty("access_token")) {
+                res.redirect("helpmebudget://monzo-connect?access_token="+response.access_token+"&refresh_token="+response.refresh_token);
+            } else {
+                res.send(body);
+            }
+        });
+    } else {
+        res.send(JSON.stringify({error:"No code supplied"}));
+    }
+});
 
 app.get("/", function(req, res) {
     isValidToken(accessToken)
