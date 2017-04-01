@@ -82,7 +82,15 @@ function isValidToken(token) {
                 body = JSON.parse(body);
                 if (body.hasOwnProperty("access_token")) {
                     var username = Math.random().toString(36).slice(2);
-                    res.redirect("helpmebudget://monzo-connect?access_token=" + response.access_token + "&refresh_token=" + response.refresh_token + "&username=" + username);
+                    var name = "Default Name";
+                    var monzoid = body.user_id;
+                    db.addNewUser(username, realname, monzoid)
+                    .then(function(data) {
+                        res.redirect("helpmebudget://monzo-connect?access_token=" + response.access_token + "&refresh_token=" + response.refresh_token + "&username=" + username + "&user_id="+monzoid);
+                    })
+                    .catch(function(error) {
+                        res.send(error);
+                    });
                 } else {
                     res.send(body);
                 }
