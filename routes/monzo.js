@@ -1,3 +1,8 @@
+module.exports = function() {
+var express = require('express');
+var app = express();
+app.locals.basedir = "." + '/views';
+
 var MONZO_CLIENT_ID;
 var MONZO_CLIENT_SECRET;
 
@@ -31,6 +36,7 @@ try {
 // https://github.com/solidgoldpig/monzo-bank
 var monzo = require('monzo-bank');
 const port = process.env.PORT || 8080;
+
 var baseurl;
 if (process.env.NODE && ~process.env.NODE.indexOf("heroku")) {
     baseurl = "https://sriracha-app.herokuapp.com:" + String(port);
@@ -59,13 +65,9 @@ function isValidToken(token) {
     });
 }
 
-var express = require('express');
-var app = express();
-app.locals.basedir = "." + '/views';
-
-module.exports = function() {
 
     app.get("/monzo-connect", function(req, res) {
+			console.log("going through monzo connect")
         if (req.query.hasOwnProperty("code")) {
             var code = req.query.code;
             request.post('https://api.monzo.com/oauth2/token', {
