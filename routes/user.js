@@ -3,6 +3,9 @@ module.exports = function(){
 	var app = express();
         var db = require('./../database.js');
 	app.locals.basedir = "." + '/views';
+        var bodyParser = require('body-parser');
+        app.use(bodyParser.json()); // support json encoded bodies
+        app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 	//The 404 Route (ALWAYS Keep this as the last route)
 	app.get('/user/:user/', function(req, res){
@@ -44,16 +47,14 @@ module.exports = function(){
 	});
         
         app.post('/api/:user/addfriend/', function(req, res){
-            console.log(req.query);
+            console.log(req.body);
             var username = req.params.user;
             if (
-                (req.query.hasOwnProperty("username")) &&
-                (req.query.hasOwnProperty("name")) &&
-                (req.query.hasOwnProperty("phoneNumbers")) 
+                (req.body.hasOwnProperty("name")) &&
+                (req.body.hasOwnProperty("phoneNumbers")) 
             ) {
-                var username = req.query.username;
-                var friendname = req.query.name;
-                var phones = req.query.phoneNumbers;
+                var friendname = req.body.name;
+                var phones = req.body.phoneNumbers;
                 db.addNewFriend(username, friendname, phones)
                 .then(function(data){
                     res.send(data);
@@ -62,7 +63,7 @@ module.exports = function(){
                     res.send(error);
                 });
             } else {
-                res.send(JSON.stringify({error:"Please provide parameters username, friendname and phone"}));
+                res.send(JSON.stringify({error:"Please provide parameters name and phoneNumbers"}));
             }
 	});
         
