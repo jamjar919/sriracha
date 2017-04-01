@@ -6,13 +6,16 @@ var http = require('http').Server(app);
 var passport = require('passport');
 var MonzoStrategy = require('passport-monzo').Strategy;
 var MonzoKeys = require('./monzosecret.json');
+var MonzoDevToken = require("./devtoken.json");
+var monzo = require('monzo-bank');
 const MONZO_CLIENT_ID = MonzoKeys.client_id;
 const MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
-
 const port = process.env.PORT || 8080;
+var accessToken = MonzoDevToken.token;
 
 app.get("/", function(req, res) {
-    res.send("bugger off");
+    accessToken = "";
+    tokenInfoPromise = monzo.tokenInfo(accessToken)
 });
 
 http.listen(port, function(){
@@ -22,7 +25,7 @@ http.listen(port, function(){
 passport.use(new MonzoStrategy({
         clientID: MONZO_CLIENT_ID,
         clientSecret: MONZO_CLIENT_SECRET,
-        callbackURL: "http://127.0.0.1:3000/auth/monzo/callback"
+        callbackURL: "http://google.com"
     },
     function(accessToken, refreshToken, profile, cb) {
         User.findOrCreate({ monzoId: profile.id }, function (err, user) {
