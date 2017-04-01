@@ -68,7 +68,7 @@ module.exports = function(){
             }
 	});
         
-        app.get('/api/adduser/', function(req, res){
+        app.post('/api/adduser/', function(req, res){
             console.log(req.query);
             if (
                 (req.query.hasOwnProperty("username")) &&
@@ -98,9 +98,10 @@ module.exports = function(){
             });
     });
 
-    app.get('/user/:user/add/', function(req, res) {
+    app.get('/user/:user/add/:key/', function(req, res) {
         var parameters = {
-            user: req.params.user
+            user: req.params.user,
+            key: req.params.key
         }
         res.render('add_secret', parameters);
     });
