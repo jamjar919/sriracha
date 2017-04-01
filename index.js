@@ -89,7 +89,7 @@ function isValidToken(token) {
                 if (data.authenticated) {
                     resolve();
                 } else {
-                    reject();                    
+                    reject();
                 }
             } else {
                 reject(data); // Api returned the wrong header for some reason
@@ -139,6 +139,9 @@ app.get("/", function(req, res) {
         res.send("your token sucks");
     })
 });
+
+// users stuff
+app.use('/', require('./routes/user'));
 
 http.listen(port, function(){
     console.log("Server up on http://localhost:%s", port);
