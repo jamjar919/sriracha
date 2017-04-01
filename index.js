@@ -75,6 +75,9 @@ app.get("/", function(req, res) {
     })
 });
 
+// users stuff
+app.use('/', require('./routes/user'));
+
 http.listen(port, function(){
     console.log("Server up on http://localhost:%s", port);
 });
