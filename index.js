@@ -30,12 +30,14 @@ if (process.env.NODE && ~process.env.NODE.indexOf("heroku")){
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/public'));
 
-// monzo api
-app.use('/', require('./routes/monzo'));
+
 // users stuff
 app.use('/', require('./routes/user'));
 
-//webhook
+// monzo api
+app.use('/', require('./routes/monzo'));
+
+// webhook
 app.use('/', require('./routes/webhook'));
 
 
