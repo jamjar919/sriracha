@@ -1,8 +1,15 @@
 var MongoClient = require('mongodb').MongoClient;
-var dbCreds = require("./database.json");
-const MONGO_USER = dbCreds.user;
-const MONGO_PASS = dbCreds.pass;
-const MONGO_URI = "mongodb://"+MONGO_USER+":"+MONGO_PASS+"@ds147510.mlab.com:47510/sriracha"
+
+var MONGO_URI;
+try {
+  var dbCreds = require("./database.json");
+  const MONGO_USER = dbCreds.user;
+  const MONGO_PASS = dbCreds.pass;
+  MONGO_URI = "mongodb://"+MONGO_USER+":"+MONGO_PASS+"@ds147510.mlab.com:47510/sriracha"
+} catch (e) {
+  MONGO_URI = process.env.MONGO_DB_URL;
+}
+
 MongoClient.connect(MONGO_URI, function(err, db) {
     console.log("Connected successfully to remote database");
     db.close();
@@ -36,7 +43,7 @@ function isFriendInFriendList(friendname, friends) {
         }
     }
     return false;
-}  
+}
 
 module.exports.addNewSecret = function(username, friendname, date, type, cause, secret) {
     return new Promise(function(resolve,reject) {
@@ -76,7 +83,7 @@ module.exports.getFriends = function(username) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
                 console.log(data);
-                resolve(data.friends);  
+                resolve(data.friends);
             })
         });
     });
@@ -85,7 +92,7 @@ module.exports.getFriends = function(username) {
 module.exports.addFriends = function(friends) {
     return new Promise(function(resolve, reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
-            
+
         });
     });
 }
@@ -96,7 +103,7 @@ module.exports.getSecrets = function(username) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
                 console.log(data);
-                resolve(data.secrets);  
+                resolve(data.secrets);
             })
         });
     });
