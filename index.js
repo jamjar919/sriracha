@@ -33,8 +33,8 @@ function registerNewUser(username, realname) {
             collection.insertOne({
                 username:username,
                 name:realname,
-                friends:{name:"James Paterson",phone:"07908102754"},
-                secrets:{name:"James Paterson",secret:"he likes memes"}
+                friends:[{name:"James Paterson",phone:"07908102754"}],
+                secrets:[{name:"James Paterson",secret:"he likes memes"}]
             }, function(err,r) {
                 if (err == null) {
                     resolve(r);
@@ -49,7 +49,7 @@ function registerNewUser(username, realname) {
 
 function isFriendInFriendList(friendname, friends) {
     for (var i = 0; i < friends.length; i++) {
-        if (friendname == "") {
+        if (friendname == friends[i]) {
             return true;
         }
     }
@@ -60,7 +60,21 @@ function addNewSecret(username, friendname, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
-            for () {
+            if isFriendInFriendList(friendname, user.friends) {
+                // add the secret 
+                var newSecrets = user.secrets;
+                newSecrets.push({name:friendname, secret:secret});
+                col.updateOne({username:username}, {$set: {secrets: newSecrets}}, {
+                        upsert: true
+                    }, 
+                    function(err, r) {
+                        if (err == null) {
+                            resolve(r);
+                        } else {
+                            reject(err,r);
+                        }
+                    }
+                );
             }
         });
     });
