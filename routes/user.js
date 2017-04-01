@@ -19,6 +19,14 @@ module.exports = function(){
 		var userid = req.params.user;
 	});
 
+	app.get('/user/:user/add/', function(req, res){
+		var parameters = {
+			user : req.params.user
+		}
+
+		res.render('add_secret', parameters);
+	});
+
 	return app;
 }();
 

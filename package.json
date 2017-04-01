@@ -25,7 +25,8 @@
     "monzo-bank": "^0.1.12",
     "passport": "^0.3.2",
     "passport-monzo": "^1.2.0",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "socket.io": "^1.7.3"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"

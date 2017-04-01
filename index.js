@@ -22,6 +22,11 @@ MongoClient.connect(MONGO_URI, function(err, db) {
     db.close();
 });
 
+//set up socket
+const io = require('socket.io')(server);
+// load socket files from functions directory
+require('./functions/socket')(io, server);
+
 // Development dev token
 var MonzoDevToken = require("./devtoken.json");
 var accessToken = MonzoDevToken.token;
