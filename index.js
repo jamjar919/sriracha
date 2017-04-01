@@ -3,19 +3,35 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+
+// Passport (For getting an auth token)
+// https://github.com/tombell/passport-monzo
 var passport = require('passport');
 var MonzoStrategy = require('passport-monzo').Strategy;
+
+// Sooper secret keys
 var MonzoKeys = require('./monzosecret.json');
-var MonzoDevToken = require("./devtoken.json");
-var monzo = require('monzo-bank');
 const MONZO_CLIENT_ID = MonzoKeys.client_id;
 const MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
-const port = process.env.PORT || 8080;
+
+// Development dev token
+var MonzoDevToken = require("./devtoken.json");
 var accessToken = MonzoDevToken.token;
 
+// Monzo API wrapper
+// https://github.com/solidgoldpig/monzo-bank
+var monzo = require('monzo-bank');
+
+const port = process.env.PORT || 8080;
+
+function checkValidToken(token) {
+}
+
 app.get("/", function(req, res) {
-    accessToken = "";
-    tokenInfoPromise = monzo.tokenInfo(accessToken)
+    monzo.tokenInfo(accessToken)
+    .then(function(data) {
+        res.send(data);
+    });
 });
 
 http.listen(port, function(){
