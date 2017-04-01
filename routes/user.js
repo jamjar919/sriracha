@@ -69,14 +69,16 @@ module.exports = function(){
 	});
         
         app.post('/api/adduser/', function(req, res){
-            console.log(req.query);
+            console.log(req.body);
             if (
-                (req.query.hasOwnProperty("username")) &&
-                (req.query.hasOwnProperty("realname")) 
+                (req.body.hasOwnProperty("username")) &&
+                (req.body.hasOwnProperty("name")) &&
+                (req.body.hasOwnProperty("monzoid"))
             ) {
-                var username = req.query.username;
-                var realname = req.query.realname;
-                db.addNewUser(username, realname)
+                var username = req.body.username;
+                var realname = req.body.name;
+                var monzoid = req.body.monzoid;
+                db.addNewUser(username, realname, monzoid)
                 .then(function(data){
                     res.send(data);
                 })
@@ -85,7 +87,7 @@ module.exports = function(){
                 });
         } else {
             res.send(JSON.stringify({
-                error: "Please provide parameters username, friendname, date, type and secret"
+                error: "Please provide parameters username, name, monzoid"
             }));
         }
     });

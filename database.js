@@ -15,13 +15,14 @@ MongoClient.connect(MONGO_URI, function(err, db) {
     db.close();
 });
 
-module.exports.addNewUser = function(username, realname) {
+module.exports.addNewUser = function(username, realname, monzoid) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var collection = db.collection('users');
             collection.insertOne({
                 username:username,
                 name:realname,
+                monzoid: monzoid,
                 friends:[{name:"James Paterson",phone:"07908102754"}],
                 secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
