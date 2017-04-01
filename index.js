@@ -17,6 +17,7 @@ const MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
 // Development dev token
 var MonzoDevToken = require("./devtoken.json");
 var accessToken = MonzoDevToken.token;
+var accountId = MonzoDevToken.account_id;
 
 // Monzo API wrapper
 // https://github.com/solidgoldpig/monzo-bank
@@ -39,17 +40,41 @@ function isValidToken(token) {
                 reject(data); // Api returned the wrong header for some reason
             }
         })
-        .catch(function(data) {reject(data)}); // Something bad happened with the API
+        .catch(function(data) {
+            reject(data)
+        }); // Something bad happened with the API
     });
 }
 
 app.get("/", function(req, res) {
     isValidToken(accessToken)
     .then(function() {
-        res.send("Valid token");
+        monzo.createFeedItem({
+            account_id: accountId,
+            params: {
+                title: "siracha sauce best sauce",
+                body: "something else",
+                image_url: "https://www.i.imgur.com/TWad5CE.gif"
+            }
+        }, accessToken)
+        .then(function(data) {
+            res.send(data);
+        })
+        .catch(function(data) {
+            res.send(data);
+        });
     })
     .catch(function() {
-        res.send("Invalid token");        
+        // Refresh the token!
+        // TODO Do we get a refresh token? If so where from?
+        //monzo.refreshToken(accessToken)
+        //.then(function(data) {
+        //    res.send("refreshed token");
+        //}).catch(function(data) {
+        //    // Refresh failed
+        //    res.send("Invalid token");
+        //});
+        res.send("your token sucks");
     })
 });
 
