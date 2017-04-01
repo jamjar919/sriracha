@@ -98,7 +98,8 @@ module.exports.addNewFriend = function(username, friendname, phones) {
                     var newFriends = user.friends;
                     newFriends.push({
                         name:friendname,
-                        phones:phones
+                        phones:phones,
+                        key: Math.random().toString(36).substring(7)
                     });
                     db.collection('users').updateOne({username:username}, {$set: {friends: newFriends}}, {
                             upsert: true
