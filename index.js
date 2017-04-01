@@ -24,14 +24,33 @@ var monzo = require('monzo-bank');
 
 const port = process.env.PORT || 8080;
 
-function checkValidToken(token) {
+function isValidToken(token) {
+    return new Promise(function(resolve, reject) {
+        monzo.tokenInfo(token)
+        .then(function(data) {
+            console.log(data);
+            if (data.hasOwnProperty("authenticated")) {
+                if (data.authenticated) {
+                    resolve();
+                } else {
+                    reject();                    
+                }
+            } else {
+                reject(data); // Api returned the wrong header for some reason
+            }
+        })
+        .catch(function(data) {reject(data)}); // Something bad happened with the API
+    });
 }
 
 app.get("/", function(req, res) {
-    monzo.tokenInfo(accessToken)
-    .then(function(data) {
-        res.send(data);
-    });
+    isValidToken(accessToken)
+    .then(function() {
+        res.send("Valid token");
+    })
+    .catch(function() {
+        res.send("Invalid token");        
+    })
 });
 
 http.listen(port, function(){
