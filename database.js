@@ -120,12 +120,18 @@ module.exports.addNewFriend = function(username, friendname, phones) {
     });
 }
 
-module.exports.addNewBudget = function(username,budget) {
+module.exports.addNewBudget = function(username,amount,end,done,completed) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
                 console.log(data);
+                var budget = {
+                    amount: amount,
+                    end: Date(end),
+                    done: false,
+                    completed: false
+                }
                 db.collection('users').updateOne({username:username}, {$set: {budget: budget}}, {
                         upsert: true
                     },
