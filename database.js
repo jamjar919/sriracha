@@ -120,6 +120,29 @@ module.exports.addNewFriend = function(username, friendname, phones) {
     });
 }
 
+module.exports.addNewBudget = function(username,budget) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                console.log(data);
+                db.collection('users').updateOne({username:username}, {$set: {budget: budget}}, {
+                        upsert: true
+                    },
+                    function(err, r) {
+                        if (err == null) {
+                            resolve(r);
+                        } else {
+                            console.log(err);
+                            reject(err,r);
+                        }
+                    }
+                );  
+            })
+        });
+    });
+}
+
 module.exports.getFriends = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
