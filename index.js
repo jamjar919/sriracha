@@ -15,7 +15,6 @@ app.locals.basedir = __dirname + '/views';
 
 //set up socket
 const io = require('socket.io')(server);
-// load socket files from functions directory
 require('./functions/socket')(io, server);
 
 
@@ -27,7 +26,6 @@ if (process.env.NODE && ~process.env.NODE.indexOf("heroku")){
 } else {
 	baseurl = "http://localhost:" + String(port);
 }
-
 
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/public'));
