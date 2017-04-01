@@ -97,11 +97,18 @@ module.exports = function(){
 		var parameters = {
 			user : req.params.user
 		}
-
 		res.render('add_secret', parameters);
 	});
         
         app.get('/user/:user/add/', function(req,res) {})
+
+	app.post('/user/:user/submit', function(req, res){
+		console.log(req.query);
+		var parameters = {
+			user : req.params.user
+		}
+		res.render('profile', parameters);
+	});
 
 	return app;
 }();

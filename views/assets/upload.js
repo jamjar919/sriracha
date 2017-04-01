@@ -42,7 +42,6 @@ function checkUploadedImages(){
 		    $(this).find(':input[type=submit]').prop('disabled', false);
 		});
 	}
-
 }
 
 var backgroundInterval = setInterval(function(){
