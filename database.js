@@ -8,7 +8,7 @@ MongoClient.connect(MONGO_URI, function(err, db) {
     db.close();
 });
 
-module.exports.registerNewUser = function(username, realname) {
+module.exports.addNewUser = function(username, realname) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var collection = db.collection('users');
@@ -16,7 +16,7 @@ module.exports.registerNewUser = function(username, realname) {
                 username:username,
                 name:realname,
                 friends:[{name:"James Paterson",phone:"07908102754"}],
-                secrets:[{name:"James Paterson",secret:"he likes memes"}]
+                secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
                 if (err == null) {
                     resolve(r);
@@ -78,6 +78,39 @@ module.exports.addNewSecret = function(username, friendname, date, type, secret)
     });
 }
 
+module.exports.addNewFriend = function(username, friendname, phone) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                if (user == null) {
+                    reject({error:"User not found"});
+                } else {
+                    console.log("user found")
+                    // add the secret
+                    var newFriends = user.friends;
+                    newFriends.push({
+                        name:friendname,
+                        phone:phone
+                    });
+                    db.collection('users').updateOne({username:username}, {$set: {friends: newFriends}}, {
+                            upsert: true
+                        },
+                        function(err, r) {
+                            if (err == null) {
+                                resolve(r);
+                            } else {
+                                console.log(err);
+                                reject(err,r);
+                            }
+                        }
+                    );
+                }
+            })
+        });
+    });
+}
+
 module.exports.getFriends = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
@@ -86,14 +119,6 @@ module.exports.getFriends = function(username) {
                 console.log(data);
                 resolve(data.friends);  
             })
-        });
-    });
-}
-
-module.exports.addFriends = function(friends) {
-    return new Promise(function(resolve, reject) {
-        MongoClient.connect(MONGO_URI, function(err, db) {
-            
         });
     });
 }

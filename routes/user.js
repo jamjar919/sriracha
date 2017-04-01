@@ -43,6 +43,48 @@ module.exports = function(){
             }
 	});
         
+        app.get('/api/addfriend/', function(req, res){
+            console.log(req.query);
+            if (
+                (req.query.hasOwnProperty("username")) &&
+                (req.query.hasOwnProperty("friendname")) &&
+                (req.query.hasOwnProperty("phone")) 
+            ) {
+                var username = req.query.username;
+                var friendname = req.query.friendname;
+                var phone = req.query.phone;
+                db.addNewFriend(username, friendname, phone)
+                .then(function(data){
+                    res.send(data);
+                })
+                .catch(function(error) {
+                    res.send(error);
+                });
+            } else {
+                res.send(JSON.stringify({error:"Please provide parameters username, friendname and phone"}));
+            }
+	});
+        
+        app.get('/api/adduser/', function(req, res){
+            console.log(req.query);
+            if (
+                (req.query.hasOwnProperty("username")) &&
+                (req.query.hasOwnProperty("realname")) 
+            ) {
+                var username = req.query.username;
+                var realname = req.query.realname;
+                db.addNewUser(username, realname)
+                .then(function(data){
+                    res.send(data);
+                })
+                .catch(function(error) {
+                    res.send(error);
+                });
+            } else {
+                res.send(JSON.stringify({error:"Please provide parameters username, friendname, date, type and secret"}));
+            }
+	});
+        
         app.get("/user/:user/api/friends/", function(req, res) {
             var userid = req.params.user;
             db.getFriends(userid)
