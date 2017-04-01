@@ -63,9 +63,10 @@ app.get("/monzo-connect", function(req, res) {
             grant_type:"authorization_code",
             client_id: MONZO_CLIENT_ID,
             client_secret: MONZO_CLIENT_SECRET,
-            redirect_uri: "http://localhost/monzo-connect",
+            redirect_uri: "http://localhost:8080/monzo-connect",
             code: code
         }}, function (error, response, body) {
+            body = JSON.parse(body);
             if (body.hasOwnProperty("access_token")) {
                 res.redirect("helpmebudget://monzo-connect?access_token="+response.access_token+"&refresh_token="+response.refresh_token);
             } else {
