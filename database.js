@@ -23,6 +23,7 @@ module.exports.addNewUser = function(username, realname, monzoid) {
                 username:username,
                 name:realname,
                 monzoid: monzoid,
+                budget: null,
                 friends:[{name:"James Paterson",phone:"07908102754"}],
                 secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
@@ -130,7 +131,8 @@ module.exports.addNewBudget = function(username,amount,end,done,completed) {
                     amount: amount,
                     end: Date(end),
                     done: false,
-                    completed: false
+                    completed: false,
+                    value: 0
                 }
                 db.collection('users').updateOne({username:username}, {$set: {budget: budget}}, {
                         upsert: true
@@ -145,6 +147,38 @@ module.exports.addNewBudget = function(username,amount,end,done,completed) {
                     }
                 );  
             })
+        });
+    });
+}
+
+module.exports.addToBudget = function(username,amount) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                console.log(data);
+                var newBudget = data.budget;
+                if (newBudget != null) {
+                    newBudget.value = newBudget.value + amount; 
+                    db.collection('users').updateOne({username:username}, {$set: {budget: newBudget}}, {
+                            upsert: true
+                        },
+                        function(err, r) {
+                            if (err == null) {
+                                resolve(r);
+                            } else {
+                                console.log(err);
+                                reject(err,r);
+                            }
+                        }
+                    );  
+                } else {
+                    reject({error:"no budget set yet"})
+                }
+            })
+            .catch(function(error) {
+                reject({"error":"no user found"});
+            });
         });
     });
 }
