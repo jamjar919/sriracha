@@ -18,6 +18,11 @@ var MonzoKeys = require('./monzosecret.json');
 const MONZO_CLIENT_ID = MonzoKeys.client_id;
 const MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
 
+//set up socket
+const io = require('socket.io')(server);
+// load socket files from functions directory
+require('./functions/socket')(io, server);
+
 // Development dev token
 var MonzoDevToken = require("./devtoken.json");
 var accessToken = MonzoDevToken.token;
