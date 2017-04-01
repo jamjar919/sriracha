@@ -145,6 +145,10 @@ app.use(express.static(__dirname + '/public'));
 // users stuff
 app.use('/', require('./routes/user'));
 
+//webhook
+app.use('/', require('./routes/webhook'));
+
+
 server.listen(port, function(){
 	console.log("Server up on " + baseurl);
 });

@@ -43,7 +43,7 @@ module.exports = function(){
             }
 	});
         
-        app.get('/api/addfriend/', function(req, res){
+        app.post('/api/addfriend/', function(req, res){
             console.log(req.query);
             if (
                 (req.query.hasOwnProperty("username")) &&
