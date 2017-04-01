@@ -18,6 +18,7 @@
   "homepage": "https://github.com/jamjar919/sriracha#readme",
   "dependencies": {
     "express": "^4.15.2",
+    "http": "0.0.0",
     "request": "^2.81.0"
   }
 }
