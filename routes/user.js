@@ -48,7 +48,6 @@ module.exports = function(){
 	});
         
         app.post('/api/:user/addfriend/', function(req, res){
-            console.log(req.body);
             var username = req.params.user;
             if (
                 (req.body.hasOwnProperty("name")) &&
@@ -68,15 +67,17 @@ module.exports = function(){
             }
 	});
         
-        app.post('/api/adduser/', function(req, res){
-            console.log(req.query);
+    app.post('/api/adduser/', function(req, res){
+            console.log(req.body);
             if (
-                (req.query.hasOwnProperty("username")) &&
-                (req.query.hasOwnProperty("realname")) 
+                (req.body.hasOwnProperty("username")) &&
+                (req.body.hasOwnProperty("name")) &&
+                (req.body.hasOwnProperty("monzoid"))
             ) {
-                var username = req.query.username;
-                var realname = req.query.realname;
-                db.addNewUser(username, realname)
+                var username = req.body.username;
+                var realname = req.body.name;
+                var monzoid = req.body.monzoid;
+                db.addNewUser(username, realname, monzoid)
                 .then(function(data){
                     res.send(data);
                 })
@@ -85,7 +86,7 @@ module.exports = function(){
                 });
         } else {
             res.send(JSON.stringify({
-                error: "Please provide parameters username, friendname, date, type and secret"
+                error: "Please provide parameters username, name, monzoid"
             }));
         }
     });
@@ -105,8 +106,6 @@ module.exports = function(){
         }
         res.render('add_secret', parameters);
     });
-
-    app.get('/user/:user/add/', function(req, res) {})
 
     app.post('/user/:user/submit', function(req, res) {
         console.log(req.query);
