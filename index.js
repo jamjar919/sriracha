@@ -1,8 +1,15 @@
 "use strict";
 // load dependencies
 var express = require('express');
+const pug = require('pug');
 var app = express();
-var http = require('http').Server(app);
+const server = require('http').Server(app);
+
+// manage views
+app.set('views', __dirname + '/views')
+app.engine('pug', require('pug').__express)
+app.set('view engine', 'pug')
+app.locals.basedir = __dirname + '/views';
 
 // Mongo
 var MongoClient = require('mongodb').MongoClient;
@@ -61,12 +68,12 @@ function addNewSecret(username, friendname, secret) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             if (isFriendInFriendList(friendname, user.friends)) {
-                // add the secret 
+                // add the secret
                 var newSecrets = user.secrets;
                 newSecrets.push({name:friendname, secret:secret});
                 col.updateOne({username:username}, {$set: {secrets: newSecrets}}, {
                         upsert: true
-                    }, 
+                    },
                     function(err, r) {
                         if (err == null) {
                             resolve(r);
@@ -138,13 +145,17 @@ app.get("/", function(req, res) {
         //    // Refresh failed
         //    res.send("Invalid token");
         //});
+        console.log("user has bad token");
         res.send("your token sucks");
     })
 });
 
+app.use(express.static(__dirname + '/bower_components'));
+app.use(express.static(__dirname + '/public'));
+
 // users stuff
 app.use('/', require('./routes/user'));
 
-http.listen(port, function(){
+server.listen(port, function(){
     console.log("Server up on http://localhost:%s", port);
 });

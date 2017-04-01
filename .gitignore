@@ -40,3 +40,5 @@ monzosecret.json
 devtoken.json
 private/twilio.json
 database.json
+
+bower_components/*
