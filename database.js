@@ -36,28 +36,36 @@ function isFriendInFriendList(friendname, friends) {
         }
     }
     return false;
-}
+}  
 
-module.exports.addNewSecret = function(username, friendname, secret) {
+module.exports.addNewSecret = function(username, friendname, date, type, cause, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
-            var user = db.collection('users').findOne({username:username})
-            if (isFriendInFriendList(friendname, user.friends)) {
-                // add the secret
-                var newSecrets = user.secrets;
-                newSecrets.push({name:friendname, secret:secret});
-                col.updateOne({username:username}, {$set: {secrets: newSecrets}}, {
-                        upsert: true
-                    },
-                    function(err, r) {
-                        if (err == null) {
-                            resolve(r);
-                        } else {
-                            reject(err,r);
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                if (isFriendInFriendList(friendname, user.friends)) {
+                    // add the secret
+                    var newSecrets = user.secrets;
+                    newSecrets.push({
+                        name:friendname,
+                        date: Date(date),
+                        type:type,
+                        cause: cause,
+                        secret:secret
+                    });
+                    db.collection('users').updateOne({username:username}, {$set: {secrets: newSecrets}}, {
+                            upsert: true
+                        },
+                        function(err, r) {
+                            if (err == null) {
+                                resolve(r);
+                            } else {
+                                reject(err,r);
+                            }
                         }
-                    }
-                );
-            }
+                    );
+                }
+            })
         });
     });
 }
@@ -65,8 +73,31 @@ module.exports.addNewSecret = function(username, friendname, secret) {
 module.exports.getFriends = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
-            var user = db.collection('users').findOne({username:username});
-            resolve(user.friends);
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                console.log(data);
+                resolve(data.friends);  
+            })
+        });
+    });
+}
+
+module.exports.addFriends = function(friends) {
+    return new Promise(function(resolve, reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            
+        });
+    });
+}
+
+module.exports.getSecrets = function(username) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                console.log(data);
+                resolve(data.secrets);  
+            })
         });
     });
 }

@@ -82,7 +82,7 @@ app.get("/monzo-connect", function(req, res) {
             grant_type:"authorization_code",
             client_id: MONZO_CLIENT_ID,
             client_secret: MONZO_CLIENT_SECRET,
-            redirect_uri: "/monzo-connect",
+            redirect_uri: "http://localhost/monzo-connect",
             code: code
         }}, function (error, response, body) {
             if (body.hasOwnProperty("access_token")) {
@@ -96,6 +96,7 @@ app.get("/monzo-connect", function(req, res) {
     }
 });
 
+/*
 app.get("/", function(req, res) {
     isValidToken(accessToken)
     .then(function() {
@@ -128,6 +129,7 @@ app.get("/", function(req, res) {
         res.send("your token sucks");
     })
 });
+*/
 
 app.use(express.static(__dirname + '/bower_components'));
 app.use(express.static(__dirname + '/public'));
