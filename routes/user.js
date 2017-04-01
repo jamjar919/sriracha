@@ -43,17 +43,18 @@ module.exports = function(){
             }
 	});
         
-        app.post('/api/addfriend/', function(req, res){
+        app.post('/api/:user/addfriend/', function(req, res){
             console.log(req.query);
+            var username = req.params.user;
             if (
                 (req.query.hasOwnProperty("username")) &&
-                (req.query.hasOwnProperty("friendname")) &&
-                (req.query.hasOwnProperty("phone")) 
+                (req.query.hasOwnProperty("name")) &&
+                (req.query.hasOwnProperty("phoneNumbers")) 
             ) {
                 var username = req.query.username;
-                var friendname = req.query.friendname;
-                var phone = req.query.phone;
-                db.addNewFriend(username, friendname, phone)
+                var friendname = req.query.name;
+                var phones = req.query.phoneNumbers;
+                db.addNewFriend(username, friendname, phones)
                 .then(function(data){
                     res.send(data);
                 })
