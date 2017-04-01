@@ -95,7 +95,7 @@ module.exports = function() {
             }));
         }
     });
-    
+
 
     app.get("/user/:user/api/friends/", function(req, res) {
         var userid = req.params.user;
@@ -123,22 +123,28 @@ module.exports = function() {
 
     // api call to store users budget
     app.post('/user/:user/budget', function(req, res) {
-        console.log(req.query);
+        console.log(req.body);
 
         var parameters = {
-            user: req.params.user,
-            amount: req.params.amount,
-            end: req.params.end
+            user: req.body.user,
+            amount: req.body.amount,
+            end: req.body.end,
+            done: false,
+            completed: "none"
         }
 
         // store these in the database
-        db.getFriends(addNewBudget)
+        db.addNewBudget(parameters.user, parameters.amount, parameters.end, parameters.done, parameters.completed)
             .then(function(data) {
                 res.send(JSON.stringify({
                     "response": "ok",
                     "message": data
                 }));
-            });
+            }).catch(function(data){
+							// handle error here.
+ 						 	console.log("wtf")
+						});
+			console.log("ayy");
     });
 
     return app;
