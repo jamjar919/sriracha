@@ -15,7 +15,7 @@ MongoClient.connect(MONGO_URI, function(err, db) {
     db.close();
 });
 
-module.exports.registerNewUser = function(username, realname) {
+module.exports.addNewUser = function(username, realname) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var collection = db.collection('users');
@@ -23,7 +23,7 @@ module.exports.registerNewUser = function(username, realname) {
                 username:username,
                 name:realname,
                 friends:[{name:"James Paterson",phone:"07908102754"}],
-                secrets:[{name:"James Paterson",secret:"he likes memes"}]
+                secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
                 if (err == null) {
                     resolve(r);
@@ -37,27 +37,32 @@ module.exports.registerNewUser = function(username, realname) {
 }
 
 function isFriendInFriendList(friendname, friends) {
-    for (var i = 0; i < friends.length; i++) {
-        if (friendname == friends[i]) {
+    console.log(friends);
+    for (var i = 0; i < friends.length; i += 1) {
+        console.log(i);
+        if (friendname == friends[i].name) {
             return true;
         }
     }
     return false;
 }
 
-module.exports.addNewSecret = function(username, friendname, date, type, cause, secret) {
+module.exports.addNewSecret = function(username, friendname, date, type, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             db.collection('users').findOne({username:username})
             .then(function(user) {
-                if (isFriendInFriendList(friendname, user.friends)) {
+                if (user == null) {
+                    reject({error:"User not found"});
+                } else if (isFriendInFriendList(friendname, user.friends)) {
+                    console.log("user found")
                     // add the secret
                     var newSecrets = user.secrets;
                     newSecrets.push({
                         name:friendname,
                         date: Date(date),
                         type:type,
-                        cause: cause,
+                        exposed:false,
                         secret:secret
                     });
                     db.collection('users').updateOne({username:username}, {$set: {secrets: newSecrets}}, {
@@ -67,6 +72,42 @@ module.exports.addNewSecret = function(username, friendname, date, type, cause, 
                             if (err == null) {
                                 resolve(r);
                             } else {
+                                console.log(err);
+                                reject(err,r);
+                            }
+                        }
+                    );
+                } else {
+                    reject({error: "Not a friend of the specified user"});
+                }
+            })
+        });
+    });
+}
+
+module.exports.addNewFriend = function(username, friendname, phone) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                if (user == null) {
+                    reject({error:"User not found"});
+                } else {
+                    console.log("user found")
+                    // add the secret
+                    var newFriends = user.friends;
+                    newFriends.push({
+                        name:friendname,
+                        phone:phone
+                    });
+                    db.collection('users').updateOne({username:username}, {$set: {friends: newFriends}}, {
+                            upsert: true
+                        },
+                        function(err, r) {
+                            if (err == null) {
+                                resolve(r);
+                            } else {
+                                console.log(err);
                                 reject(err,r);
                             }
                         }
@@ -83,16 +124,8 @@ module.exports.getFriends = function(username) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
                 console.log(data);
-                resolve(data.friends);
+                resolve(data.friends);  
             })
-        });
-    });
-}
-
-module.exports.addFriends = function(friends) {
-    return new Promise(function(resolve, reject) {
-        MongoClient.connect(MONGO_URI, function(err, db) {
-
         });
     });
 }
