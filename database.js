@@ -30,27 +30,32 @@ module.exports.registerNewUser = function(username, realname) {
 }
 
 function isFriendInFriendList(friendname, friends) {
-    for (var i = 0; i < friends.length; i++) {
-        if (friendname == friends[i]) {
+    console.log(friends);
+    for (var i = 0; i < friends.length; i += 1) {
+        console.log(i);
+        if (friendname == friends[i].name) {
             return true;
         }
     }
     return false;
 }  
 
-module.exports.addNewSecret = function(username, friendname, date, type, cause, secret) {
+module.exports.addNewSecret = function(username, friendname, date, type, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             db.collection('users').findOne({username:username})
             .then(function(user) {
-                if (isFriendInFriendList(friendname, user.friends)) {
+                if (user == null) {
+                    reject({error:"User not found"});
+                } else if (isFriendInFriendList(friendname, user.friends)) {
+                    console.log("user found")
                     // add the secret
                     var newSecrets = user.secrets;
                     newSecrets.push({
                         name:friendname,
                         date: Date(date),
                         type:type,
-                        cause: cause,
+                        exposed:false,
                         secret:secret
                     });
                     db.collection('users').updateOne({username:username}, {$set: {secrets: newSecrets}}, {
@@ -60,10 +65,13 @@ module.exports.addNewSecret = function(username, friendname, date, type, cause, 
                             if (err == null) {
                                 resolve(r);
                             } else {
+                                console.log(err);
                                 reject(err,r);
                             }
                         }
                     );
+                } else {
+                    reject({error: "Not a friend of the specified user"});
                 }
             })
         });
