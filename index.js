@@ -4,6 +4,13 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 
+// Mongo
+var MongoClient = require('mongodb').MongoClient;
+var dbCreds = require("./database.json");
+const MONGO_USER = dbCreds.user;
+const MONGO_PASS = dbCreds.pass;
+const MONGO_URI = "mongodb://"+MONGO_USER+":"+MONGO_PASS+"@ds147510.mlab.com:47510/sriracha"
+
 // Development dev token
 var MonzoDevToken = require("./devtoken.json");
 var accessToken = MonzoDevToken.token;
@@ -42,7 +49,7 @@ app.get("/", function(req, res) {
         monzo.createFeedItem({
             account_id: accountId,
             params: {
-                title: "siracha sauce best sauce",
+                title: "siracha sauce best sauce "+Math.random().toString(36).substring(7),
                 body: "something else",
                 image_url: "https://www.i.imgur.com/TWad5CE.gif"
             }
