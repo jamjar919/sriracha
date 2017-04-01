@@ -1,14 +1,28 @@
+
+var fs = require('fs');
 var twilio = require('twilio');
 
-var accountSid = '{{ account_sid }}'; // Your Account SID from www.twilio.com/console
-var authToken = '{{ auth_token }}';   // Your Auth Token from www.twilio.com/console
-var client = new twilio.RestClient(accountSid, authToken);
-
+var tw = {};
+try {
+  tw = fs.readFileSync('../private/twilio.json');
+  console.log("Secret twilio keys are found locally.");
+} catch (err) {
+  // secret file isn't found; load from server variables
+  tw = {
+      "account_id": process.env.TWILIO_ID,
+      "auth_token": process.env.TWILIO_AUTH,
+      "phone_number": process.env.TWILIO_PHONE
+  }
+}
+var client = new twilio.RestClient(tw.account_id, tw.auth_token);
+a
 function getContacts(user_id){
+  // this is empty, will need to write a function for this!
   var contacts = [];
 }
 
 function getSecretMessage(user_id,secret_id){
+  // this is empty, will need to write a function for this!
   var message = "";
   return message;
 }
@@ -28,7 +42,7 @@ function sendMessageToContact = function(phone_number, message) {
   client.messages.create({
       body: message,
       to: phone_number,  // Text this number
-      from: '+12345678901' // From a valid Twilio number
+      from: tw.phone_number // From a valid Twilio number
   }, function(err, message) {
       console.log("There was an error involved with sending a message");
       console.log(message.sid);
