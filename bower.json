@@ -1,0 +1,21 @@
+{
+  "name": "sriracha",
+  "description": "Fun",
+  "main": "index.js",
+  "authors": [
+    "Thien Nguyen <t.nguyen@outlook.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/jamjar919/sriracha",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "tether": "^1.4.0",
+    "bootstrap": "bootstrap4#^3.3.7"
+  }
+}
