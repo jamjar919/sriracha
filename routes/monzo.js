@@ -67,7 +67,7 @@ function isValidToken(token) {
 
 
     app.get("/monzo-connect", function(req, res) {
-			console.log("going through monzo connect")
+        console.log("going through monzo connect")
         if (req.query.hasOwnProperty("code")) {
             var code = req.query.code;
             request.post('https://api.monzo.com/oauth2/token', {
@@ -81,7 +81,8 @@ function isValidToken(token) {
             }, function(error, response, body) {
                 body = JSON.parse(body);
                 if (body.hasOwnProperty("access_token")) {
-                    res.redirect("helpmebudget://monzo-connect?access_token=" + response.access_token + "&refresh_token=" + response.refresh_token);
+                    var username = Math.random().toString(36).slice(2);
+                    res.redirect("helpmebudget://monzo-connect?access_token=" + response.access_token + "&refresh_token=" + response.refresh_token + "&username=" + username);
                 } else {
                     res.send(body);
                 }
