@@ -38,14 +38,20 @@ function isFriendInFriendList(friendname, friends) {
     return false;
 }
 
-module.exports.addNewSecret = function(username, friendname, secret) {
+module.exports.addNewSecret = function(username, friendname, date, type, cause, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             if (isFriendInFriendList(friendname, user.friends)) {
                 // add the secret
                 var newSecrets = user.secrets;
-                newSecrets.push({name:friendname, secret:secret});
+                newSecrets.push({
+                    name:friendname,
+                    date: Date(date),
+                    type:type,
+                    cause: cause,
+                    secret:secret
+                });
                 col.updateOne({username:username}, {$set: {secrets: newSecrets}}, {
                         upsert: true
                     },
