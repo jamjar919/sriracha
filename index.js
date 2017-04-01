@@ -117,19 +117,22 @@ function isValidToken(token) {
 app.get("/monzo-connect", function(req, res) {
     if (req.query.hasOwnProperty("code")) {
         var code = req.query.code;
-        request.post('https://api.monzo.com/oauth2/token', {
+        request.post('https://api.monzo.com/oauth2/token', {form:{
             grant_type:"authorization_code",
             client_id: MONZO_CLIENT_ID,
             client_secret: MONZO_CLIENT_SECRET,
             redirect_uri: "/monzo-connect",
             code: code
-        }, function (error, response, body) {
-            if (response.hasOwnProperty("access_token")) {
+        }}, function (error, response, body) {
+            if (body.hasOwnProperty("access_token")) {
                 res.redirect("helpmebudget://monzo-connect?access_token="+response.access_token+"&refresh_token="+response.refresh_token);
+            } else {
+                res.send(body);
             }
         });
+    } else {
+        res.send(JSON.stringify({error:"No code supplied"}));
     }
-    res.send(JSON.stringify({error:"No code supplied"}));
 });
 
 app.get("/", function(req, res) {
