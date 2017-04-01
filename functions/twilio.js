@@ -1,6 +1,6 @@
-
 var fs = require('fs');
 var twilio = require('twilio');
+var db = require('./../database.js');
 
 var tw = {};
 try {
@@ -16,9 +16,8 @@ try {
 }
 var client = new twilio.RestClient(tw.account_id, tw.auth_token);
 a
-function getContacts(user_id){
-  // this is empty, will need to write a function for this!
-  var contacts = [];
+function getContacts(username){
+  return db.getFriends(username);
 }
 
 function getSecretMessage(user_id,secret_id){
