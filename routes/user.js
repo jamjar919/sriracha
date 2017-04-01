@@ -95,6 +95,7 @@ module.exports = function() {
             }));
         }
     });
+    
 
     app.get("/user/:user/api/friends/", function(req, res) {
         var userid = req.params.user;
