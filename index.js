@@ -104,8 +104,10 @@ function isValidToken(token) {
 app.get("/monzo-connect", function(req, res) {
     if (req.query.hasOwnProperty("code")) {
         var code = req.query.code;
+        var token = "ssadas";
+        res.redirect("helpmebudget://monzo-connect?access_token="+token);
     }
-    res.send(JSON.stringify({"error":"No code supplied"}));
+    res.send(JSON.stringify({error:"No code supplied"}));
 });
 
 app.get("/", function(req, res) {
