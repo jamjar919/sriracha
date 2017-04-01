@@ -126,7 +126,7 @@ module.exports = function() {
         console.log(req.body);
 
         var parameters = {
-            user: req.body.user,
+            user: req.params.user,
             amount: req.body.amount,
             end: req.body.end,
             done: false,
