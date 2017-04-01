@@ -1,8 +1,12 @@
-module.exports = function() {
-    var express = require('express');
-    var app = express();
-    var db = require('./../database.js');
-    app.locals.basedir = "." + '/views';
+
+module.exports = function(){
+	var express = require('express');
+	var app = express();
+        var db = require('./../database.js');
+	app.locals.basedir = "." + '/views';
+        var bodyParser = require('body-parser');
+        app.use(bodyParser.json()); // support json encoded bodies
+        app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
     //The 404 Route (ALWAYS Keep this as the last route)
     app.get('/user/:user/', function(req, res) {
@@ -38,47 +42,42 @@ module.exports = function() {
                 .catch(function(error) {
                     res.send(error);
                 });
-        } else {
-            res.send(JSON.stringify({
-                error: "Please provide parameters username, friendname, date, type and secret"
-            }));
-        }
-    });
-
-    app.get('/api/addfriend/', function(req, res) {
-        console.log(req.query);
-        if (
-            (req.query.hasOwnProperty("username")) &&
-            (req.query.hasOwnProperty("friendname")) &&
-            (req.query.hasOwnProperty("phone"))
-        ) {
-            var username = req.query.username;
-            var friendname = req.query.friendname;
-            var phone = req.query.phone;
-            db.addNewFriend(username, friendname, phone)
-                .then(function(data) {
+            } else {
+                res.send(JSON.stringify({error:"Please provide parameters username, friendname, date, type and secret"}));
+            }
+	});
+        
+        app.post('/api/:user/addfriend/', function(req, res){
+            console.log(req.body);
+            var username = req.params.user;
+            if (
+                (req.body.hasOwnProperty("name")) &&
+                (req.body.hasOwnProperty("phoneNumbers")) 
+            ) {
+                var friendname = req.body.name;
+                var phones = req.body.phoneNumbers;
+                db.addNewFriend(username, friendname, phones)
+                .then(function(data){
                     res.send(data);
                 })
                 .catch(function(error) {
                     res.send(error);
                 });
-        } else {
-            res.send(JSON.stringify({
-                error: "Please provide parameters username, friendname and phone"
-            }));
-        }
-    });
-
-    app.get('/api/adduser/', function(req, res) {
-        console.log(req.query);
-        if (
-            (req.query.hasOwnProperty("username")) &&
-            (req.query.hasOwnProperty("realname"))
-        ) {
-            var username = req.query.username;
-            var realname = req.query.realname;
-            db.addNewUser(username, realname)
-                .then(function(data) {
+            } else {
+                res.send(JSON.stringify({error:"Please provide parameters name and phoneNumbers"}));
+            }
+	});
+        
+        app.get('/api/adduser/', function(req, res){
+            console.log(req.query);
+            if (
+                (req.query.hasOwnProperty("username")) &&
+                (req.query.hasOwnProperty("realname")) 
+            ) {
+                var username = req.query.username;
+                var realname = req.query.realname;
+                db.addNewUser(username, realname)
+                .then(function(data){
                     res.send(data);
                 })
                 .catch(function(error) {

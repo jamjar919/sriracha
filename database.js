@@ -85,7 +85,7 @@ module.exports.addNewSecret = function(username, friendname, date, type, secret)
     });
 }
 
-module.exports.addNewFriend = function(username, friendname, phone) {
+module.exports.addNewFriend = function(username, friendname, phones) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             db.collection('users').findOne({username:username})
@@ -98,7 +98,7 @@ module.exports.addNewFriend = function(username, friendname, phone) {
                     var newFriends = user.friends;
                     newFriends.push({
                         name:friendname,
-                        phone:phone
+                        phones:phones
                     });
                     db.collection('users').updateOne({username:username}, {$set: {friends: newFriends}}, {
                             upsert: true

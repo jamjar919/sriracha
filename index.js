@@ -35,6 +35,10 @@ app.use('/', require('./routes/monzo'));
 // users stuff
 app.use('/', require('./routes/user'));
 
+//webhook
+app.use('/', require('./routes/webhook'));
+
+
 server.listen(port, function(){
 	console.log("Server up on " + baseurl);
 });
