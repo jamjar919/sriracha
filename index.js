@@ -13,10 +13,20 @@ app.engine('pug', require('pug').__express)
 app.set('view engine', 'pug')
 app.locals.basedir = __dirname + '/views';
 
+var MONZO_CLIENT_ID;
+var MONZO_CLIENT_SECRET;
+
 // Monzo Secret
-var MonzoKeys = require('./monzosecret.json');
-const MONZO_CLIENT_ID = MonzoKeys.client_id;
-const MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
+try {
+  var MonzoKeys = require('./monzosecret.json');
+  MONZO_CLIENT_ID = MonzoKeys.client_id;
+  MONZO_CLIENT_SECRET = MonzoKeys.client_secret;
+  console.log("got local monzo secret keys from json")
+} catch (e) {
+  MONZO_CLIENT_ID = process.env.MONZO_CLIENT_ID;
+  MONZO_CLIENT_SECRET = process.env.MONZO_CLIENT_SECRET;
+  console.log("got local monzo secret keys from heroku")
+}
 
 //set up socket
 const io = require('socket.io')(server);
@@ -24,16 +34,25 @@ const io = require('socket.io')(server);
 require('./functions/socket')(io, server);
 
 // Development dev token
-var MonzoDevToken = require("./devtoken.json");
-var accessToken = MonzoDevToken.token;
-var accountId = MonzoDevToken.account_id;
+var accessToken;
+var accountId;
+try {
+  var MonzoDevToken = require("./devtoken.json");
+  accessToken = MonzoDevToken.token;
+  accountId = MonzoDevToken.account_id;
+  console.log("got james keys from json")
+}
+catch (e) {
+  console.log("got james keys from heroku")
+  accessToken = process.env.MONZO_JAMES_TOKEN;
+  accountId = process.env.MONZO_JAMES_ID;
+}
 
 // Monzo API wrapper
 // https://github.com/solidgoldpig/monzo-bank
 var monzo = require('monzo-bank');
 
 const port = process.env.PORT || 8080;
-
 
 function isValidToken(token) {
     return new Promise(function(resolve, reject) {
