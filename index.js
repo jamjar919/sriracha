@@ -101,10 +101,6 @@ function isValidToken(token) {
     });
 }
 
-app.get("/:username/", function(req,res) {
-    var username = req.params.username;
-    res.send(username);
-});
 
 app.get("/", function(req, res) {
     isValidToken(accessToken)
