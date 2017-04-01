@@ -125,8 +125,8 @@ module.exports = function() {
         console.log(req.query);
 
         var parameters = {
-            user: req.params.user
-            amount: req.params.amount
+            user: req.params.user,
+            amount: req.params.amount,
             end: req.params.end
         }
 
