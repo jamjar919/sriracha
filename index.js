@@ -24,7 +24,7 @@ function isValidToken(token) {
                 if (data.authenticated) {
                     resolve();
                 } else {
-                    reject();                    
+                    reject();
                 }
             } else {
                 reject(data); // Api returned the wrong header for some reason
