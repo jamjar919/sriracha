@@ -60,7 +60,7 @@ function addNewSecret(username, friendname, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
-            if isFriendInFriendList(friendname, user.friends) {
+            if (isFriendInFriendList(friendname, user.friends)) {
                 // add the secret 
                 var newSecrets = user.secrets;
                 newSecrets.push({name:friendname, secret:secret});
@@ -100,6 +100,11 @@ function isValidToken(token) {
         }); // Something bad happened with the API
     });
 }
+
+app.get("/:username/", function(req,res) {
+    var username = req.params.username;
+    res.send(username);
+});
 
 app.get("/", function(req, res) {
     isValidToken(accessToken)
