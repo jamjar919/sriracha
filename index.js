@@ -42,7 +42,7 @@ app.get("/", function(req, res) {
         monzo.createFeedItem({
             account_id: accountId,
             params: {
-                title: "siracha sauce best sauce",
+                title: "siracha sauce best sauce "+Math.random().toString(36).substring(7),
                 body: "something else",
                 image_url: "https://www.i.imgur.com/TWad5CE.gif"
             }
