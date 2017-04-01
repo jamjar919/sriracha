@@ -101,6 +101,12 @@ function isValidToken(token) {
     });
 }
 
+app.get("/monzo-connect", function(req, res) {
+    if (req.query.hasOwnProperty("code")) {
+        var code = req.query.code;
+    }
+    res.send(JSON.stringify({"error":"No code supplied"}));
+});
 
 app.get("/", function(req, res) {
     isValidToken(accessToken)
