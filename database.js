@@ -38,7 +38,7 @@ module.exports.addNewUser = function(username, realname, monzoid) {
     });
 }
 
-module.exports.addNewSecret = function(username, friendname, date, type, secret) {
+module.exports.addNewSecret = function(username, friendname, date, image_url, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             db.collection('users').findOne({username:username})
@@ -51,7 +51,7 @@ module.exports.addNewSecret = function(username, friendname, date, type, secret)
                     newSecrets.push({
                         name:friendname,
                         date: Date(date),
-                        type:type,
+                        image_url:image_url,
                         exposed:false,
                         secret:secret
                     });
