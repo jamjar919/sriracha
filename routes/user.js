@@ -132,6 +132,7 @@ module.exports = function() {
     // Add a secret to a user
     app.get('/user/:user/api/addsecret/', function(req, res) {
         console.log(req.query);
+        var key = req.query.key
         if (
             (req.query.hasOwnProperty("friendname")) &&
             (req.query.hasOwnProperty("text"))
@@ -146,10 +147,11 @@ module.exports = function() {
             var secret = req.query.text;
             db.addNewSecret(username, friendname, date, image_url, secret)
                 .then(function(data) {
-                    res.send(data);
+                    res.redirect("/user/"+username+"/add/"+key+"/?success=true");
                 })
                 .catch(function(error) {
-                    res.send(error);
+                    console.log(data);
+                    res.redirect("/user/"+username+"/add/"+key+"/?success=false");
                 });
         } else {
             res.send(JSON.stringify({
@@ -195,11 +197,11 @@ module.exports = function() {
             db.addNewFriend(username, friendname, phones)
                 .then(function(data) {
                     console.log(data);
-                    res.redirect("/user/"+username+"/api/addfriend/?success=true");
+                    res.send(data)
                 })
                 .catch(function(error) {
                     console.log(data);
-                    res.redirect("/user/"+username+"/api/addfriend/?success=false");
+                    res.send(error)
                 });
         } else {
             res.send(JSON.stringify({
