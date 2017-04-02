@@ -54,4 +54,11 @@ img.img_preview{
 		max-height: 100px;
 		max-width: 100px;
 	}
+
+.homejumbo {
+  text-align: center;
+}
+.homejumbo img {
+  padding: 20px;
+}
 </style>
