@@ -169,7 +169,7 @@ module.exports.addNewBudget = function(username,amount,end) {
                             reject(err,r);
                         }
                     }
-                );  
+                );
             })
         });
     });
@@ -189,7 +189,7 @@ module.exports.exposeNewSecret = function(username) {
                     }
                     i++;
                 }
-                if (secretToExpose != null) {               
+                if (secretToExpose != null) {
                     secretToExpose = user.secrets[i];
                     secrets[i].exposed = true;
                     db.collection('users').updateOne({username:username}, {$set: {secrets: secrets}}, {
@@ -203,13 +203,13 @@ module.exports.exposeNewSecret = function(username) {
                                 reject(err,r);
                             }
                         }
-                    ); 
+                    );
                 } else {
                     reject({error:"no secrets to reveal!"});
                 }
             })
             .catch(function(error) {
-                res.send({error:"user does not exist"})
+                reject({error:"user does not exist"})
             });
         });
     });
@@ -223,7 +223,7 @@ module.exports.addToBudget = function(username,amount) {
                 console.log(data);
                 var newBudget = data.budget;
                 if (newBudget != null) {
-                    newBudget.value = newBudget.value + parseFloat(amount); 
+                    newBudget.value = newBudget.value + parseFloat(amount);
                     db.collection('users').updateOne({username:username}, {$set: {budget: newBudget}}, {
                             upsert: true
                         },
@@ -235,7 +235,7 @@ module.exports.addToBudget = function(username,amount) {
                                 reject(err,r);
                             }
                         }
-                    );  
+                    );
                 } else {
                     reject({error:"no budget set yet"})
                 }
@@ -284,7 +284,7 @@ module.exports.clearBudget = function(username) {
                 reject({error:"user not found"});
             })
         });
-    })    
+    })
 }
 
 module.exports.getBudget = function(username) {
@@ -320,7 +320,7 @@ module.exports.getFriends = function(username) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
-                resolve(data.friends);  
+                resolve(data.friends);
             })
         });
     });
