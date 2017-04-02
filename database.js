@@ -151,7 +151,6 @@ module.exports.addNewBudget = function(username,amount,end,done,completed) {
     });
 }
 
-
 module.exports.exposeNewSecret = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
@@ -222,6 +221,20 @@ module.exports.addToBudget = function(username,amount) {
             });
         });
     });
+}
+
+module.exports.getBudget = function(username) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            var user = db.collection('users').findOne({username:username})
+            .then(function(data) {
+                
+            })
+            .catch(function(error){
+                reject({error:"user not found"});
+            })
+        });
+    })
 }
 
 module.exports.getFriends = function(username) {

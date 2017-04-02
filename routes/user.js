@@ -21,7 +21,7 @@ module.exports = function() {
             .then(function(data) {
                 var parameters = {
                     user: req.params.user,
-                    secrets: data
+                    secrets: data                    
                 }
                 res.render('profile', parameters);
             });
