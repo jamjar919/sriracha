@@ -85,12 +85,11 @@ app.get("/monzo-connect", function(req, res) {
                 db.addNewUser(username, realname, monzoid)
                 .then(function(data) {
                     res.redirect("helpmebudget://monzo-connect?access_token=" + response.access_token + "&refresh_token=" + response.refresh_token + "&username=" + username + "&user_id="+monzoid);
-
-										// add a webhook for this user id
-										registerWebhookPromise = monzo.registerWebhook(monzoid, baseurl + "/webhook", response.access_token)
-										.then(function(data){
-											console.log("user has webhook registered! here's some data on it:", data);	
-										})
+                    // add a webhook for this user id
+                    registerWebhookPromise = monzo.registerWebhook(monzoid, baseurl + "/webhook", response.access_token)
+                    .then(function(data){
+                            console.log("user has webhook registered! here's some data on it:", data);	
+                    })
                 })
                 .catch(function(error) {
                     res.send(error);

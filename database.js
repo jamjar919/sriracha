@@ -24,7 +24,7 @@ module.exports.addNewUser = function(username, realname, monzoid) {
                 name:realname,
                 monzoid: monzoid,
                 budget: null,
-                friends:[{name:"James Paterson",phone:"07908102754","key":"nolight"}],
+                friends:[{name:"James Paterson",phones:["+447908102754"],"key":"nolight"}],
                 secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
                 if (err == null) {
