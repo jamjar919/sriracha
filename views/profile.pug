@@ -6,13 +6,13 @@ block container
 	.starter-template
 		.detailcontainer
 			h1 #{user}
-			p This is a place to see secrets of #{user}. You get to see a new secret of #{user}s everytime #{user} overspends. #{user} has #{secrets.length} secrets. 
+			p This is a place to see secrets of #{user}. You get to see a new secret of this human everytime #{user} overspends. #{user} has #{secrets.length} secrets. 
 			if budget != null
 				div.alert.alert-success
-					p #{user} has a current spending goal of £#{budget.amount} and has spent £#{budget.value} of it already. They have until #{budget.end} until this constraint is lifted.
+					p #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends next #{budget.endday} at #{budget.endtime}.
 			else
 				div.alert.alert-danger
-					span #{user} has not set up a spending goal yet!	
+					span #{user} hasn't set up a spending goal yet..
 		h2 Secrets
 		- numSecrets = 0;
 		each item in secrets
@@ -33,7 +33,7 @@ block container
 							p.card-text #{item.cause}
 					
 		if numSecrets < 1
-			p #{user} has been a good boy and not overspent yet!
+			p #{user} hasn't been a stupid idiot yet.
 		else
 			p #{user} has had #{numSecrets} secrets revealed
 		h2 Previous Budgets

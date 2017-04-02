@@ -9,6 +9,34 @@ module.exports = function() {
         extended: true
     })); // support encoded bodies
 
+
+    function getDayString(number){
+      var day;
+      switch (number) {
+    case 0:
+        day = "Sunday";
+        break;
+    case 1:
+        day = "Monday";
+        break;
+    case 2:
+        day = "Tuesday";
+        break;
+    case 3:
+        day = "Wednesday";
+        break;
+    case 4:
+        day = "Thursday";
+        break;
+    case 5:
+        day = "Friday";
+        break;
+    case 6:
+        day = "Saturday";
+      }
+      return day;
+    }
+
     /**
      *
      * A C T U A L   W E B   P A G E S
@@ -19,6 +47,10 @@ module.exports = function() {
         console.log(req.params);
         db.getUser(req.params.user)
             .then(function(user) {
+              console.log(user);
+              console.log(user.budget);
+              user.budget.endday =  getDayString(new Date(user.budget.end).getDay());
+              user.budget.endtime = new Date(user.budget.end).getTime();
                 var parameters = {
                     user: user.name,
                     secrets: user.secrets,
