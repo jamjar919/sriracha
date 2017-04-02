@@ -1,6 +1,8 @@
 extends /includes/layout
 
 block container
+	script
+		include assets/moment.min.js
 	.detailcontainer
 		h1.display-4 #{user}
 		p This is a place to see secrets of #{user}. You get to see a new secret of this human everytime #{user} overspends. #{user} has #{secrets.length} secrets. 
@@ -8,7 +10,7 @@ block container
 			.card.card-inverse.card-warning.mb-3.text-center
 				.card-block
 					blockquote.card-blockquote
-						p.lead #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends next #{budget.endday} at #{budget.endtime}.
+						p.lead #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends next #{spendGoalDate}
 		else
 			div.alert.alert-danger
 				span #{user} hasn't set up a spending goal yet..

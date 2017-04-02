@@ -4,6 +4,7 @@ module.exports = function() {
     var db = require('./../database.js');
     app.locals.basedir = "." + '/views';
     var bodyParser = require('body-parser');
+    var moment = require('moment');
     app.use(bodyParser.json()); // support json encoded bodies
     app.use(bodyParser.urlencoded({
         extended: true
@@ -55,16 +56,17 @@ module.exports = function() {
               }
               for (var i in user.secrets){
                 user.secrets[i].secret = '"'+user.secrets[i].secret+'"';
-                user.secrets[i].date = new Date(user.secrets[i].date).toLocaleDateString();
+                user.secrets[i].date = new Date(user.secrets[i].date);
               }
               for (var i in user.budgethistory){
-                user.budgethistory[i].end = new Date(user.budgethistory[i].end).toLocaleDateString();
+                user.budgethistory[i].end = new Date(user.budgethistory[i].end);
               }
                 var parameters = {
                     user: user.name,
                     secrets: user.secrets,
                     budget: user.budget,
-                    budgethistory: user.budgethistory
+                    budgethistory: user.budgethistory,
+                    spendGoalDate: moment(user.budget.end).fromNow()
                 }
                 console.log("rendering page");
                 res.render('profile', parameters);
