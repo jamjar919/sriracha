@@ -38,17 +38,6 @@ module.exports.addNewUser = function(username, realname, monzoid) {
     });
 }
 
-function isFriendInFriendList(friendname, friends) {
-    console.log(friends);
-    for (var i = 0; i < friends.length; i += 1) {
-        console.log(i);
-        if (friendname == friends[i].name) {
-            return true;
-        }
-    }
-    return false;
-}
-
 module.exports.addNewSecret = function(username, friendname, date, type, secret) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
@@ -56,8 +45,7 @@ module.exports.addNewSecret = function(username, friendname, date, type, secret)
             .then(function(user) {
                 if (user == null) {
                     reject({error:"User not found"});
-                } else if (isFriendInFriendList(friendname, user.friends)) {
-                    console.log("user found")
+                } else {
                     // add the secret
                     var newSecrets = user.secrets;
                     newSecrets.push({
@@ -79,8 +67,6 @@ module.exports.addNewSecret = function(username, friendname, date, type, secret)
                             }
                         }
                     );
-                } else {
-                    reject({error: "Not a friend of the specified user"});
                 }
             })
         });

@@ -82,8 +82,7 @@ module.exports = function() {
     });
 
     // Add a secret to a user
-    // TODO verify the friend with a key rather than with name
-    app.get('/user/:user/api/addsecret/', function(req, res) {
+    app.post('/user/:user/api/addsecret/', function(req, res) {
         console.log(req.query);
         if (
             (req.query.hasOwnProperty("friendname")) &&
@@ -91,7 +90,7 @@ module.exports = function() {
             (req.query.hasOwnProperty("type")) &&
             (req.query.hasOwnProperty("secret"))
         ) {
-            var username = req.query.username;
+            var username = req.params.user;
             var friendname = req.query.friendname;
             var date = req.query.date;
             var type = req.query.type;
@@ -193,7 +192,7 @@ module.exports = function() {
         }
     });
     
-    // Add an amount to the user budget (like if they spent this amount of money)
+    // clear the budget
     app.get("/user/:user/api/budget/clear/", function(req, res) {
         console.log("clearing budget");
         var username = req.params.user;
