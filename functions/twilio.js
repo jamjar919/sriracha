@@ -4,7 +4,8 @@ var db = require('./../database.js');
 
 var tw = {};
 try {
-  tw = fs.readFileSync('../private/twilio.json');
+  console.log("trying to load local");
+  tw = require('./twilio.json');
   console.log("Secret twilio keys are found locally.");
 } catch (err) {
   // secret file isn't found; load from server variables
@@ -13,12 +14,12 @@ try {
       "auth_token": process.env.TWILIO_AUTH,
       "phone_number": process.env.TWILIO_PHONE
   }
+  console.log("twilio keys are found on heroku")
 }
+
+console.log(tw.auth_token);
+
 var client = new twilio.RestClient(tw.account_id, tw.auth_token);
-a
-function getContacts(username){
-  return db.getFriends(username);
-}
 
 function getSecretMessage(user_id,secret_id){
   // this is empty, will need to write a function for this!
@@ -26,18 +27,22 @@ function getSecretMessage(user_id,secret_id){
   return message;
 }
 
-function sendMessagesToContacts(user_id,secret_id){
-  // get the contacts
-  var contacts = getContacts(user_id);
-  // get the secret message
-  var message = getSecretMessage(secret_id);
-  // send the message to each of the contacts
-  for (var mates_number : contacts){
-    sendMessageToContact(mates_number, message);
-  }
+function sendMessagesToContacts(user_id,message){
+  db.getFriends(username)
+  .then(function(contacts){
+    console.log(contacts);
+    // send the message to each of the contacts
+    for (var mates_number in contacts){
+      sendMessageToContact(mates_number, message);
+    }
+  })
 }
 
-function sendMessageToContact = function(phone_number, message) {
+module.exports.sendExploit = function(user_id, message){
+  sendMessagesToContacts(user_id);
+}
+
+function sendMessageToContact (phone_number, message) {
   client.messages.create({
       body: message,
       to: phone_number,  // Text this number

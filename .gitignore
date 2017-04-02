@@ -42,3 +42,4 @@ private/twilio.json
 database.json
 
 bower_components/*
+functions/twilio.json
