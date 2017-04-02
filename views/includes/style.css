@@ -84,4 +84,10 @@ img.img_preview{
 .homejumbo img {
   padding: 20px;
 }
+footer {
+    color: #FFF;
+    background-color: #292b2c !important;
+    margin-top: 2em;
+    text-align: center;
+}
 </style>
