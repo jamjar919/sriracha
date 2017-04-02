@@ -205,8 +205,19 @@ module.exports = function() {
                 res.send(JSON.stringify(data));
             });
     });
-
-
+    
+    // Get the user secrets
+    app.get('/user/:user/api/secrets/', function(req, res) {
+        db.getUser(req.params.user)
+        .then(function(data) {
+            res.send(JSON.stringify(data.secrets));
+        }).catch(function(data){
+            // handle error here.
+            res.send(data);
+        });
+    });
+    
+    
     /**
      *
      * B U D G E T
