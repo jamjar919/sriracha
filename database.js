@@ -237,6 +237,33 @@ module.exports.addToBudget = function(username,amount) {
     });
 }
 
+module.exports.clearBudget = function(username) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            var user = db.collection('users').findOne({username:username})
+            .then(function(user) {
+                var previousBudgets = user.budgethistory;
+                previousBudgets.push(user.budget);
+                db.collection('users').updateOne({username:username}, {$set: {budget: null, budgethistory:previousBudgets}}, {
+                        upsert: true
+                    },
+                    function(err, r) {
+                        if (err == null) {
+                            resolve(r);
+                        } else {
+                            console.log(err);
+                            reject(err,r);
+                        }
+                    }
+                );
+            })
+            .catch(function(error){
+                reject({error:"user not found"});
+            })
+        });
+    })    
+}
+
 module.exports.getBudget = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
