@@ -38,7 +38,15 @@ module.exports = function() {
             user: req.params.user,
             key: req.params.key
         }
-        res.render('add_secret', parameters);
+        db.isValidAddSecretKey(parameters.user, parameters.key)
+        .then(function(friend){
+            parameters.friendname = friend.name;
+            res.render('add_secret', parameters);
+        })
+        .catch(function(error) {
+            console.log(error);
+            res.render('add_secret_fail', parameters);
+        });
     });
     
     
@@ -172,7 +180,10 @@ module.exports = function() {
         if (amount != null) { 
             db.addToBudget(username, amount)
             .then(function(data) {
-                req.send(data);
+                res.send(JSON.stringify({
+                    "response": "ok",
+                    "message": data
+                }));
             })
             .catch(function(data) {
                 res.send(data);
@@ -188,7 +199,10 @@ module.exports = function() {
         var username = req.params.user;
         db.clearBudget(username)
         .then(function(data) {
-            req.send(data);
+            res.send(JSON.stringify({
+                "response": "ok",
+                "message": data
+            }));
         })
         .catch(function(data) {
             res.send(data);

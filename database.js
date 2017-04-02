@@ -24,7 +24,7 @@ module.exports.addNewUser = function(username, realname, monzoid) {
                 name:realname,
                 monzoid: monzoid,
                 budget: null,
-                friends:[{name:"James Paterson",phone:"07908102754"}],
+                friends:[{name:"James Paterson",phone:"07908102754","key":"nolight"}],
                 secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
                 if (err == null) {
@@ -96,6 +96,33 @@ module.exports.monzoIdToUsername = function(monzoid) {
             })
             .catch(function(error){
                 reject({error:"no user found for that monzo id"});
+            })
+        });
+    });
+}
+
+module.exports.isValidAddSecretKey = function(username, key) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                var friends = user.friends;
+                console.log(friends);
+                var foundFriend = false;
+                for (var i = 0; i < friends.length; i++) {
+                                            console.log(friends[i]);
+                    if (friends[i].key == key) {
+                        foundFriend = true;
+                        resolve(friends[i]);
+                        break;
+                    }
+                }
+                if (!foundFriend) {
+                    reject({"error":"invalid key"});
+                }
+            })
+            .catch(function(error) {
+                reject({"error":"user not found"});
             })
         });
     });
