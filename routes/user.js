@@ -51,6 +51,13 @@ module.exports = function() {
               console.log(user.budget);
               user.budget.endday =  getDayString(new Date(user.budget.end).getDay());
               user.budget.endtime = new Date(user.budget.end).getTime();
+              for (var i in user.secrets){
+                user.secrets[i].secret = '"'+user.secrets[i].secret+'"';
+                user.secrets[i].date = new Date(user.secrets[i].date).toLocaleDateString();
+              }
+              for (var i in user.budgethistory){
+                user.budgethistory[i].end = new Date(user.budgethistory[i].end).toLocaleDateString();
+              }
                 var parameters = {
                     user: user.name,
                     secrets: user.secrets,

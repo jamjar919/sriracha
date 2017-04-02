@@ -3,57 +3,62 @@ extends /includes/layout
 block container
 	p #{user}
 	.container
-	.starter-template
-		.detailcontainer
-			h1 #{user}
-			p This is a place to see secrets of #{user}. You get to see a new secret of this human everytime #{user} overspends. #{user} has #{secrets.length} secrets. 
-			if budget != null
-				div.alert.alert-success
-					p #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends next #{budget.endday} at #{budget.endtime}.
-			else
-				div.alert.alert-danger
-					span #{user} hasn't set up a spending goal yet..
-		h2 Secrets
-		- numSecrets = 0;
-		each item in secrets
-			if item.exposed == true
-				- numSecrets += 1
-				if item.image_url == null
-					.card.cardthang
-						.card-block
-							h4.card-title #{item.secret}
-							h6.card-subtitle.mb-2.text-muted #{item.date}
-							p.card-text #{item.cause}
+		.row
+			.col-xl-2
+			.col-md-8
+				.detailcontainer
+					h1.display-4 #{user}
+					p This is a place to see secrets of #{user}. You get to see a new secret of this human everytime #{user} overspends. #{user} has #{secrets.length} secrets. 
+					if budget != null
+						.card.card-inverse.card-warning.mb-3.text-center
+							.card-block
+								blockquote.card-blockquote
+									p.lead #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends next #{budget.endday} at #{budget.endtime}.
+					else
+						div.alert.alert-danger
+							span #{user} hasn't set up a spending goal yet..
+				h2 Secrets
+				- numSecrets = 0;
+				each item in secrets
+					if item.exposed == true
+						- numSecrets += 1
+						if item.image_url == null
+							.card.cardthang
+								.card-block
+									blockquote.blockquote
+										h4.card-title #{item.secret}
+									h6.card-subtitle.mb-2.text-muted #{item.date}
+									p.card-text #{item.cause}
+						else
+							.card.cardthang.mb-3
+								img.card-img-top(src=item.image_url, alt='item.image_url')
+								.card-block
+									h4.card-title  #{item.secret}
+									h6.card-subtitle.mb-2.text-muted #{item.date}
+									p.card-text #{item.cause}
+							
+				if numSecrets < 1
+					p #{user} hasn't been a stupid idiot yet.
 				else
-					.card.cardthang
-						img.card-img-top(src=item.image_url)
-						.card-block
-							h4.card-title #{item.secret}
-							h6.card-subtitle.mb-2.text-muted #{item.date}
-							p.card-text #{item.cause}
-					
-		if numSecrets < 1
-			p #{user} hasn't been a stupid idiot yet.
-		else
-			p #{user} has had #{numSecrets} secrets revealed
-		h2 Previous Budgets
-		each item in budgethistory
-			case item.status
-				when "success"
-					.card.cardthang.alert-success
-						.card-block
-							h4.card-title £#{item.value}/£#{item.amount}
-							h6.card-subtitle.mb-2.text-muted Ended #{item.end}
-							h6.card-subtitle.mb-2 Successfully completed.
-				when "failed"
-					.card.cardthang.alert-danger
-						.card-block
-							h4.card-title £#{item.value}/£#{item.amount}
-							h6.card-subtitle.mb-2.text-muted Ended #{item.end}
-							h6.card-subtitle.mb-2 Failed!
-				default
-					.card.cardthang
-						.card-block
-							h4.card-title £#{item.value}/£#{item.amount}
-							h6.card-subtitle.mb-2.text-muted Ended #{item.end}
-							h6.card-subtitle.mb-2 Cancelled
+					p #{user} has had #{numSecrets} secrets revealed
+				h2 Previous Budgets
+				each item in budgethistory
+					case item.status
+						when "success"
+							.card.cardthang.alert-success
+								.card-block
+									h4.card-title £#{item.value}/£#{item.amount}
+									h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+									h6.card-subtitle.mb-2 Successfully completed.
+						when "failed"
+							.card.cardthang.alert-danger
+								.card-block
+									h4.card-title £#{item.value}/£#{item.amount}
+									h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+									h6.card-subtitle.mb-2 Failed!
+						default
+							.card.cardthang
+								.card-block
+									h4.card-title £#{item.value}/£#{item.amount}
+									h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+									h6.card-subtitle.mb-2 Cancelled
