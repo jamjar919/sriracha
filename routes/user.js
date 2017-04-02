@@ -174,6 +174,18 @@ module.exports = function() {
      * 
      **/
     
+    // Get the user budget
+    app.get('/user/:user/api/budget/', function(req, res) {
+        db.getUser(req.params.user)
+        .then(function(data) {
+            res.send(JSON.stringify(data.budget));
+        }).catch(function(data){
+            // handle error here.
+            console.log("wtf")
+            res.send(data);
+        });
+    });
+    
     // Store the user budget
     app.post('/user/:user/api/budget/new/', function(req, res) {
         console.log(req.body);
