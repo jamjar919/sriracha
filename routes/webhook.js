@@ -20,6 +20,7 @@ module.exports = function(){
       db.monzoIdToUsername(monzo_id)
       .then(function(username){
         console.log("got username:", username);
+
         db.getBudget(username)
         .then(function(result){
           console.log("got budget:",result);
@@ -36,7 +37,8 @@ module.exports = function(){
                 // do twilio shit
 
                 console.log(data);
-                // twilio.sendExploit(username, )
+                var msg = "It's your lucky day! Your mate";
+                // twilio.sendExploit(username, msg);
               })
               .catch(function(error){
                 console.log("got some errors here:", error)
