@@ -9,18 +9,50 @@ module.exports = function() {
         extended: true
     })); // support encoded bodies
 
+
+    function getDayString(number){
+      var day;
+      switch (number) {
+    case 0:
+        day = "Sunday";
+        break;
+    case 1:
+        day = "Monday";
+        break;
+    case 2:
+        day = "Tuesday";
+        break;
+    case 3:
+        day = "Wednesday";
+        break;
+    case 4:
+        day = "Thursday";
+        break;
+    case 5:
+        day = "Friday";
+        break;
+    case 6:
+        day = "Saturday";
+      }
+      return day;
+    }
+
     /**
-     * 
+     *
      * A C T U A L   W E B   P A G E S
-     * 
+     *
      **/
     // Render user profile
     app.get('/user/:user/', function(req, res) {
         console.log(req.params);
         db.getUser(req.params.user)
             .then(function(user) {
+              console.log(user);
+              console.log(user.budget);
+              user.budget.endday =  getDayString(new Date(user.budget.end).getDay());
+              user.budget.endtime = new Date(user.budget.end).getTime();
                 var parameters = {
-                    user: user.username,
+                    user: user.name,
                     secrets: user.secrets,
                     budget: user.budget,
                     budgethistory: user.budgethistory
@@ -31,7 +63,7 @@ module.exports = function() {
                 res.send(error)
             });
     });
-    
+
     // Display the add page for a friend (display only if key is valid)
     app.get('/user/:user/add/:key/', function(req, res) {
         var parameters = {
@@ -48,14 +80,14 @@ module.exports = function() {
             res.render('add_secret_fail', parameters);
         });
     });
-    
-    
+
+
     /**
-     * 
+     *
      * A P I ' S
-     * 
+     *
      **/
-    
+
     // Add a new user
     app.post('/api/adduser/', function(req, res) {
         console.log(req.body);
@@ -115,7 +147,7 @@ module.exports = function() {
         var username = req.params.user;
         console.log(req.body);
         if (req.body.hasOwnProperty("name")) {
-            var newName = req.body.name; 
+            var newName = req.body.name;
             db.changeName(username, newName)
             .then(function(data){
                 res.send(JSON.stringify({
@@ -134,7 +166,7 @@ module.exports = function() {
             }));
         }
     });
-    
+
     // Add a friend to a user with multiple phone numbers
     app.post('/user/:user/api/addfriend/', function(req, res) {
         var username = req.params.user;
@@ -180,11 +212,11 @@ module.exports = function() {
     
     
     /**
-     * 
+     *
      * B U D G E T
-     * 
+     *
      **/
-    
+
     // Get the user budget
     app.get('/user/:user/api/budget/', function(req, res) {
         db.getUser(req.params.user)
@@ -196,7 +228,7 @@ module.exports = function() {
             res.send(data);
         });
     });
-    
+
     // Store the user budget
     app.post('/user/:user/api/budget/new/', function(req, res) {
         console.log(req.body);
@@ -219,14 +251,14 @@ module.exports = function() {
             res.send(data);
         });
     });
-    
-    
+
+
     // Add an amount to the user budget (like if they spent this amount of money)
     app.get("/user/:user/api/budget/add/", function(req, res) {
         console.log("adding to budget");
         var username = req.params.user;
         var amount = req.query.amount;
-        if (amount != null) { 
+        if (amount != null) {
             db.addToBudget(username, amount)
             .then(function(data) {
                 res.send(JSON.stringify({
@@ -241,7 +273,7 @@ module.exports = function() {
             res.send(JSON.stringify({"error":"Must supply an amount as a GET parameter"}));
         }
     });
-    
+
     // clear the budget
     app.get("/user/:user/api/budget/clear/", function(req, res) {
         console.log("clearing budget");

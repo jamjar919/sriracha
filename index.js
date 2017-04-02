@@ -28,7 +28,7 @@ if (process.env.NODE && ~process.env.NODE.indexOf("heroku")){
 }
 
 app.use(express.static(__dirname + '/bower_components'));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/views/assets'));
 
 
 // users stuff
@@ -37,6 +37,8 @@ app.use('/', require('./routes/user'));
 // webhook
 app.use('/', require('./routes/webhook'));
 
+// index
+app.use('/', require('./routes/home'));
 
 
 var monzo = require('monzo-bank');
@@ -88,7 +90,7 @@ app.get("/monzo-connect", function(req, res) {
                     // add a webhook for this user id
                     registerWebhookPromise = monzo.registerWebhook(monzoid, baseurl + "/webhook", response.access_token)
                     .then(function(data){
-                            console.log("user has webhook registered! here's some data on it:", data);	
+                            console.log("user has webhook registered! here's some data on it:", data);
                     })
                 })
                 .catch(function(error) {
@@ -105,7 +107,6 @@ app.get("/monzo-connect", function(req, res) {
         }));
     }
 });
-
 
 server.listen(port, function(){
 	console.log("Server up on " + baseurl);
