@@ -68,7 +68,10 @@ module.exports = function() {
                     secrets: user.secrets,
                     budget: user.budget,
                     budgethistory: user.budgethistory,
-                    spendGoalDate: moment(user.budget.end).fromNow()
+                }
+                parameters.spendGoalDate = null;
+                if (user.budget != null) {
+                    parameters.spendGoalDate = moment(user.budget.end).fromNow()
                 }
                 console.log("rendering page");
                 res.render('profile', parameters);
