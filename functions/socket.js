@@ -14,14 +14,17 @@ module.exports = function Server(io, server) {
       console.log("received an image to upload");
       console.log(img_json.id)
 
-      // console.log(img_json.src)
-      img_json.src = img_json.src.replace("data:image/png;base64,", "");
+      console.log(img_json.src)
+      // dude = img_json.src.split(',')[1];
+      // img_json.src = img_json.src.replace("data:image/png;base64,", "");
+      img_json.src = img_json.src.split(',')[1];
+      console.log(img_json.src);
 
       upload(img_json.src, function(err, response) {
           console.log(response.data.link)
           var resp_img = {
               'id': img_json.id,
-              'url': response.data.link
+              'url': response.data.link.replace("http", "https")
           }
           socket.emit('img_uploaded', resp_img);
           console.log("sent back image uploaded.");
