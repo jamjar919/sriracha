@@ -228,7 +228,7 @@ module.exports.getBudget = function(username) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
-                
+                resolve(data.budget);
             })
             .catch(function(error){
                 reject({error:"user not found"});

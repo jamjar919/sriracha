@@ -19,11 +19,26 @@ module.exports = function() {
         console.log(req.params);
         db.getSecrets(req.params.user)
             .then(function(data) {
-                var parameters = {
-                    user: req.params.user,
-                    secrets: data                    
-                }
-                res.render('profile', parameters);
+                db.getBudget(req.params.user)
+                .then(function(budget) {
+                    var parameters = {
+                        user: req.params.user,
+                        secrets: data,
+                        budget: budget
+                    }
+                    res.render('profile', parameters);
+                })
+                .catch(function(error) {
+                    var parameters = {
+                        user: req.params.user,
+                        secrets: data,
+                        budget: null
+                    }
+                    res.render('profile', parameters);
+                })
+            })
+            .catch(function(error) {
+                res.send(error)
             });
     });
     
