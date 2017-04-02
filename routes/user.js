@@ -17,25 +17,15 @@ module.exports = function() {
     // Render user profile
     app.get('/user/:user/', function(req, res) {
         console.log(req.params);
-        db.getSecrets(req.params.user)
-            .then(function(data) {
-                db.getBudget(req.params.user)
-                .then(function(budget) {
-                    var parameters = {
-                        user: req.params.user,
-                        secrets: data,
-                        budget: budget
-                    }
-                    res.render('profile', parameters);
-                })
-                .catch(function(error) {
-                    var parameters = {
-                        user: req.params.user,
-                        secrets: data,
-                        budget: null
-                    }
-                    res.render('profile', parameters);
-                })
+        db.getUser(req.params.user)
+            .then(function(user) {
+                var parameters = {
+                    user: user.username,
+                    secrets: user.secrets,
+                    budget: user.budget,
+                    budgethistory: user.budgethistory
+                }
+                res.render('profile', parameters);
             })
             .catch(function(error) {
                 res.send(error)
