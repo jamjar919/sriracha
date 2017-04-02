@@ -10,7 +10,7 @@ block container
 			.card.card-inverse.card-warning.mb-3.text-center
 				.card-block
 					blockquote.card-blockquote
-						p.lead #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends next #{spendGoalDate}
+						p.lead #{user}'s current spending goal is £#{budget.amount}, and has spent £#{budget.value} already. This ends #{spendGoalDate}
 		else
 			div.alert.alert-danger
 				span #{user} hasn't set up a spending goal yet..
@@ -24,14 +24,14 @@ block container
 					.card-block
 						blockquote.blockquote
 							h4.card-title #{item.secret}
-						h6.card-subtitle.mb-2.text-muted #{item.date}
+						h6.card-subtitle.mb-2.text-muted #{item.nicedate}
 						p.card-text #{item.cause}
 			else
 				.card.cardthang.mb-3
 					img.card-img-top(src=item.image_url, alt='item.image_url')
 					.card-block
 						h4.card-title  #{item.secret}
-						h6.card-subtitle.mb-2.text-muted #{item.date}
+						h6.card-subtitle.mb-2.text-muted #{item.nicedate}
 						p.card-text #{item.cause}
 				
 	if numSecrets < 1
@@ -46,17 +46,17 @@ block container
 				.card.cardthang.alert-success
 					.card-block
 						h4.card-title £#{item.value}/£#{item.amount}
-						h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+						h6.card-subtitle.mb-2.text-muted Ended #{item.niceenddate}
 						h6.card-subtitle.mb-2 Successfully completed.
 			when "failed"
 				.card.cardthang.alert-danger
 					.card-block
 						h4.card-title £#{item.value}/£#{item.amount}
-						h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+						h6.card-subtitle.mb-2.text-muted Ended #{item.niceenddate}
 						h6.card-subtitle.mb-2 Failed!
 			default
 				.card.cardthang
 					.card-block
 						h4.card-title £#{item.value}/£#{item.amount}
-						h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+						h6.card-subtitle.mb-2.text-muted Ended #{item.niceenddate}
 						h6.card-subtitle.mb-2 Cancelled

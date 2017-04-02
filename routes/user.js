@@ -56,11 +56,13 @@ module.exports = function() {
               }
               for (var i in user.secrets){
                 user.secrets[i].secret = '"'+user.secrets[i].secret+'"';
-                user.secrets[i].date = new Date(user.secrets[i].date);
+                user.secrets[i].nicedate = moment(user.secrets[i].date).fromNow();
               }
               for (var i in user.budgethistory){
-                user.budgethistory[i].end = new Date(user.budgethistory[i].end);
+                user.budgethistory[i].niceenddate = moment(user.budgethistory[i].end).fromNow();
               }
+              user.budgethistory.reverse();
+              user.secrets.reverse();
                 var parameters = {
                     user: user.name,
                     secrets: user.secrets,
