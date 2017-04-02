@@ -155,7 +155,7 @@ module.exports.addNewBudget = function(username,amount,end) {
             .then(function(data) {
                 var budget = {
                     amount: amount,
-                    end: Date(end),
+                    end: end,
                     value: 0
                 }
                 db.collection('users').updateOne({username:username}, {$set: {budget: budget}}, {

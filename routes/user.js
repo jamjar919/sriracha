@@ -154,8 +154,9 @@ module.exports = function() {
         var parameters = {
             username: req.params.user,
             amount: req.body.amount,
-            end: req.body.end,
+            end: new Date(req.body.end),
         }
+        console.log(parameters);
         // store these in the database
         db.addNewBudget(parameters.username, parameters.amount, parameters.end)
         .then(function(data) {
