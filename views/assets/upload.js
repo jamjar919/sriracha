@@ -1,6 +1,7 @@
 var socket = io();
 var oldName = "";
 var imgcount = 0;
+var images = [];
 
 socket.on('sentimg', function(img_url) {
     // we'll need to send the image url to the post form.
@@ -9,10 +10,12 @@ socket.on('sentimg', function(img_url) {
 socket.on('img_uploaded', function(img_url) {
     // we'll need to send the image url to the post form.
     console.log(img_url);
+    images.push(img_url);
 	var targetDiv = document.getElementById(img_url.id);
 	targetDiv.className += " img_upload_done";
-	var line = '<input type="hidden" name="images[]" value="'+img_url.url+'">';
+	var line = '<input type="hidden" name="image_url" value="'+img_url.url+'">';
 	$( "#pictureupload" ).append( line );
+        $( "#input_images" ).hide();
     $("#secret-image-input").val(img_url.url);
 });
 
@@ -88,3 +91,4 @@ function uploadImages(files) {
         })(img, count);
     }
 }
+

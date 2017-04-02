@@ -38,7 +38,15 @@ module.exports = function() {
             user: req.params.user,
             key: req.params.key
         }
-        res.render('add_secret', parameters);
+        db.isValidAddSecretKey(parameters.user, parameters.key)
+        .then(function(friend){
+            parameters.friendname = friend.name;
+            res.render('add_secret', parameters);
+        })
+        .catch(function(error) {
+            console.log(error);
+            res.render('add_secret_fail', parameters);
+        });
     });
     
     
@@ -74,8 +82,7 @@ module.exports = function() {
     });
 
     // Add a secret to a user
-    // TODO verify the friend with a key rather than with name
-    app.get('/user/:user/api/addsecret/', function(req, res) {
+    app.post('/user/:user/api/addsecret/', function(req, res) {
         console.log(req.query);
         if (
             (req.query.hasOwnProperty("friendname")) &&
@@ -83,7 +90,7 @@ module.exports = function() {
             (req.query.hasOwnProperty("type")) &&
             (req.query.hasOwnProperty("secret"))
         ) {
-            var username = req.query.username;
+            var username = req.params.user;
             var friendname = req.query.friendname;
             var date = req.query.date;
             var type = req.query.type;
@@ -147,8 +154,9 @@ module.exports = function() {
         var parameters = {
             username: req.params.user,
             amount: req.body.amount,
-            end: req.body.end,
+            end: new Date(req.body.end),
         }
+        console.log(parameters);
         // store these in the database
         db.addNewBudget(parameters.username, parameters.amount, parameters.end)
         .then(function(data) {
@@ -172,7 +180,10 @@ module.exports = function() {
         if (amount != null) { 
             db.addToBudget(username, amount)
             .then(function(data) {
-                req.send(data);
+                res.send(JSON.stringify({
+                    "response": "ok",
+                    "message": data
+                }));
             })
             .catch(function(data) {
                 res.send(data);
@@ -182,13 +193,16 @@ module.exports = function() {
         }
     });
     
-    // Add an amount to the user budget (like if they spent this amount of money)
+    // clear the budget
     app.get("/user/:user/api/budget/clear/", function(req, res) {
         console.log("clearing budget");
         var username = req.params.user;
         db.clearBudget(username)
         .then(function(data) {
-            req.send(data);
+            res.send(JSON.stringify({
+                "response": "ok",
+                "message": data
+            }));
         })
         .catch(function(data) {
             res.send(data);
