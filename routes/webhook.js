@@ -43,7 +43,7 @@ module.exports = function(){
                     msg += " " + data.image_url;
                   }
                   console.log(msg);
-                  // twilio.sendExploit(username, msg);
+                  twilio.sendExploit(username, msg);
                 })
                 .catch(function(error){
                   console.log("got some errors here:", error)

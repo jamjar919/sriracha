@@ -275,7 +275,7 @@ module.exports.addToBudget = function(username,amount) {
                         function(err, r) {
                             if (err == null) {
                                 resolve(r);
-                                twilio.tellFriendos(username);
+                                //twilio.tellFriendos(username);
                             } else {
                                 console.log(err);
                                 reject(err,r);
