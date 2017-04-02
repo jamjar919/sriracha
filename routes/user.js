@@ -110,6 +110,31 @@ module.exports = function() {
         }
     });
 
+    // Update the stored name
+    app.post('/user/:user/api/name',function(req,res) {
+        var username = req.params.user;
+        console.log(req.body);
+        if (req.body.hasOwnProperty("name")) {
+            var newName = req.body.name; 
+            db.changeName(username, newName)
+            .then(function(data){
+                res.send(JSON.stringify({
+                    "response": "ok",
+                    "message": data
+                }));
+            })
+            .catch(function(error){
+                res.send(JSON.stringify({
+                    "error":error
+                }));
+            })
+        } else {
+            res.send(JSON.stringify({
+                error: "Please provide parameter name"
+            }));
+        }
+    });
+    
     // Add a friend to a user with multiple phone numbers
     app.post('/user/:user/api/addfriend/', function(req, res) {
         var username = req.params.user;

@@ -73,6 +73,31 @@ module.exports.addNewSecret = function(username, friendname, date, image_url, se
     });
 }
 
+module.exports.changeName = function(username,name) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                 db.collection('users').updateOne({username:username}, {$set: {name: name}}, {
+                        upsert: true
+                    },
+                    function(err, r) {
+                        if (err == null) {
+                            resolve(r);
+                        } else {
+                            console.log(err);
+                            reject(err,r);
+                        }
+                    }
+                );
+            })
+            .catch(function(error){
+                reject({error:"no user found with that username"});
+            })
+        });
+    });
+}
+
 module.exports.monzoIdToUsername = function(monzoid) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
