@@ -36,8 +36,14 @@ module.exports = function(){
                 console.log("user has secret exposed");
                 // do twilio shit
 
+
+
                 console.log(data);
-                var msg = "It's your lucky day! Your mate";
+                var msg = "Your mate" + "nnoob" + " has exposed a secret: " + data.secret;
+                if (data.image_url){
+                  msg += " " + data.image_url;
+                }
+                console.log(msg);
                 // twilio.sendExploit(username, msg);
               })
               .catch(function(error){

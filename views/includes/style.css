@@ -1,4 +1,7 @@
 <style>
+body {
+  background-color: #A2A2BD !important;
+}
 .container {
   margin-top: 30px;
 }
@@ -8,6 +11,14 @@
 }
 .cardthang {
   margin: 10px 0px;
+}
+
+.stat {
+  padding: 10px 0px;
+}
+
+h1,h2,h3 {
+  padding: 10px;
 }
 
 .cardthang .card-img-top {

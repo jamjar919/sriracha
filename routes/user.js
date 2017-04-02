@@ -47,16 +47,26 @@ module.exports = function() {
         console.log(req.params);
         db.getUser(req.params.user)
             .then(function(user) {
-              console.log(user);
-              console.log(user.budget);
-              user.budget.endday =  getDayString(new Date(user.budget.end).getDay());
-              user.budget.endtime = new Date(user.budget.end).getTime();
+              console.log("getting user detail");
+              if (user.budget){
+                console.log(user.budget);
+                user.budget.endday = getDayString(new Date(user.end).getDay());
+                user.budget.endtime = new Date(user.budget.end).getTime();
+              }
+              for (var i in user.secrets){
+                user.secrets[i].secret = '"'+user.secrets[i].secret+'"';
+                user.secrets[i].date = new Date(user.secrets[i].date).toLocaleDateString();
+              }
+              for (var i in user.budgethistory){
+                user.budgethistory[i].end = new Date(user.budgethistory[i].end).toLocaleDateString();
+              }
                 var parameters = {
                     user: user.name,
                     secrets: user.secrets,
                     budget: user.budget,
                     budgethistory: user.budgethistory
                 }
+                console.log("rendering page");
                 res.render('profile', parameters);
             })
             .catch(function(error) {
@@ -206,7 +216,7 @@ module.exports = function() {
                 res.send(JSON.stringify(data));
             });
     });
-    
+
     // Get the user secrets
     app.get('/user/:user/api/secrets/', function(req, res) {
         db.getUser(req.params.user)
@@ -217,8 +227,8 @@ module.exports = function() {
             res.send(data);
         });
     });
-    
-    
+
+
     /**
      *
      * B U D G E T
