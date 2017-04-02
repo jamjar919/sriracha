@@ -29,7 +29,7 @@ module.exports = function(){
             var end_date = new Date(result.end);
             if (end_date > date_updated){
               console.log("date is within the budget range");
-              if (result.value + amount > result.value){
+              if (result.value + amount > result.amount){
                 console.log("user overspent");
 
                 db.exposeNewSecret(username)
@@ -43,7 +43,7 @@ module.exports = function(){
                     msg += " " + data.image_url;
                   }
                   console.log(msg);
-                  twilio.sendExploit(username, msg);
+                  // twilio.sendExploit(username, msg);
                 })
                 .catch(function(error){
                   console.log("got some errors here:", error)
