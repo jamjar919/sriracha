@@ -54,8 +54,8 @@ module.exports.tellFriendos = function(user_id){
 
         sendMessageToContact(contacts[mates_number].phone, msg);
 
-        msg = "haha jokes our domain isn't ready - try this: http://52.215.87.46:8080/user/" + user_id + "/add/" + contacts[mates_number].key;
-        sendMessageToContact(contacts[mates_number].phone, msg);
+        //msg = "haha jokes our domain isn't ready - try this: http://52.215.87.46:8080/user/" + user_id + "/add/" + contacts[mates_number].key;
+        //sendMessageToContact(contacts[mates_number].phone, msg);
       }
     })
   })
