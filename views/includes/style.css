@@ -89,5 +89,6 @@ footer {
     background-color: #292b2c !important;
     margin-top: 2em;
     text-align: center;
+    max-width: 100vw;
 }
 </style>
