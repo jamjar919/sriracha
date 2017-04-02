@@ -13,6 +13,14 @@ body {
   margin: 10px 0px;
 }
 
+.stat {
+  padding: 10px 0px;
+}
+
+h1,h2,h3 {
+  padding: 10px;
+}
+
 .cardthang .card-img-top {
     height: auto;
     width: 50%;
