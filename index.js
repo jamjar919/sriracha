@@ -18,7 +18,7 @@ const io = require('socket.io')(server);
 require('./functions/socket')(io, server);
 
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 80;
 
 var baseurl;
 if (process.env.NODE && ~process.env.NODE.indexOf("heroku")){
