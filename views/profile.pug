@@ -27,3 +27,24 @@ block container
 			p #{user} has been a good boy and not overspent yet!
 		else
 			p #{user} has had #{numSecrets} secrets revealed
+		h2 Previous Budgets
+		each item in budgethistory
+			case item.status
+				when "success"
+					.card.cardthang.alert-success
+						.card-block
+							h4.card-title £#{item.value}/£#{item.amount}
+							h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+							h6.card-subtitle.mb-2 Successfully completed.
+				when "failed"
+					.card.cardthang.alert-danger
+						.card-block
+							h4.card-title £#{item.value}/£#{item.amount}
+							h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+							h6.card-subtitle.mb-2.text-muted Failed!
+				default
+					.card.cardthang
+						.card-block
+							h4.card-title £#{item.value}/£#{item.amount}
+							h6.card-subtitle.mb-2.text-muted Ended #{item.end}
+							h6.card-subtitle.mb-2.text-muted Cancelled

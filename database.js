@@ -234,12 +234,25 @@ module.exports.addToBudget = function(username,amount) {
     });
 }
 
+function getBudgetStatus(budget) {
+    if (budget.amount < budget.value) {
+        return "failed";
+    }
+    var today = new Date();
+    // If deadline has passed
+    if (today < Date(budget.end)) {
+        return "success";
+    }
+    return "cancelled";
+}
+
 module.exports.clearBudget = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             .then(function(user) {
                 var previousBudgets = user.budgethistory;
+                user.budget.status = getBudgetStatus(user.budget);
                 previousBudgets.push(user.budget);
                 db.collection('users').updateOne({username:username}, {$set: {budget: null, budgethistory:previousBudgets}}, {
                         upsert: true
@@ -275,12 +288,25 @@ module.exports.getBudget = function(username) {
     })
 }
 
+module.exports.getUser = function(username) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                resolve(user);
+            })
+            .catch(function(error){
+                reject({error:"user not found"});
+            })
+        });
+    })
+}
+
 module.exports.getFriends = function(username) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
-                console.log(data);
                 resolve(data.friends);  
             })
         });
@@ -292,7 +318,6 @@ module.exports.getSecrets = function(username) {
         MongoClient.connect(MONGO_URI, function(err, db) {
             var user = db.collection('users').findOne({username:username})
             .then(function(data) {
-                console.log(data);
                 resolve(data.secrets);
             })
         });
