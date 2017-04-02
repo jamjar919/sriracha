@@ -5,7 +5,7 @@ var db = require('./../database.js');
 var tw = {};
 try {
   console.log("trying to load local");
-  tw = require('./twilio.json');
+  tw = require('./../private/twilio.json');
   console.log("Secret twilio keys are found locally.");
 } catch (err) {
   // secret file isn't found; load from server variables
@@ -17,6 +17,7 @@ try {
   console.log("twilio keys are found on heroku")
 }
 
+console.log(tw.account_id);
 console.log(tw.auth_token);
 
 var client = new twilio.RestClient(tw.account_id, tw.auth_token);
@@ -28,27 +29,28 @@ function getSecretMessage(user_id,secret_id){
 }
 
 function sendMessagesToContacts(user_id,message){
-  db.getFriends(username)
+  db.getFriends(user_id)
   .then(function(contacts){
     console.log(contacts);
     // send the message to each of the contacts
     for (var mates_number in contacts){
-      sendMessageToContact(mates_number, message);
+      // console.log(contacts[mates_number].phone);
+      sendMessageToContact(contacts[mates_number].phone, message);
     }
   })
 }
 
 module.exports.sendExploit = function(user_id, message){
-  sendMessagesToContacts(user_id);
+  sendMessagesToContacts(user_id, message);
 }
 
-function sendMessageToContact (phone_number, message) {
+function sendMessageToContact (phono, message) {
   client.messages.create({
       body: message,
-      to: phone_number,  // Text this number
+      to: phono,  // Text this number
       from: tw.phone_number // From a valid Twilio number
-  }, function(err, message) {
+  }, function(err) {
       console.log("There was an error involved with sending a message");
-      console.log(message.sid);
+      console.log(err);
   });
 }
