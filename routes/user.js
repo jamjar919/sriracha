@@ -60,6 +60,7 @@ module.exports = function() {
                 res.render('profile', parameters);
             })
             .catch(function(error) {
+                console.log(error);
                 res.send(error)
             });
     });
@@ -68,7 +69,12 @@ module.exports = function() {
     app.get('/user/:user/add/:key/', function(req, res) {
         var parameters = {
             user: req.params.user,
-            key: req.params.key
+            key: req.params.key,
+            success: null
+        }
+        console.log(req.query);
+        if (req.query.hasOwnProperty("success")) {
+            parameters.success = req.query.success;
         }
         db.isValidAddSecretKey(parameters.user, parameters.key)
         .then(function(friend){
@@ -178,10 +184,12 @@ module.exports = function() {
             var phones = req.body.phoneNumbers;
             db.addNewFriend(username, friendname, phones)
                 .then(function(data) {
-                    res.send(data);
+                    console.log(data);
+                    res.redirect("/user/"+username+"/api/addfriend/?success=true");
                 })
                 .catch(function(error) {
-                    res.send(error);
+                    console.log(data);
+                    res.redirect("/user/"+username+"/api/addfriend/?success=false");
                 });
         } else {
             res.send(JSON.stringify({
