@@ -24,7 +24,7 @@ module.exports = function Server(io, server) {
           console.log(response.data.link)
           var resp_img = {
               'id': img_json.id,
-              'url': response.data.link
+              'url': response.data.link.replace("http", "https")
           }
           socket.emit('img_uploaded', resp_img);
           console.log("sent back image uploaded.");
