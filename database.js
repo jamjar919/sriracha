@@ -190,8 +190,8 @@ module.exports.exposeNewSecret = function(username) {
                     i++;
                 }
                 if (secretToExpose != null) {
-                    secretToExpose = user.secrets[i];
-                    secrets[i].exposed = true;
+                    secrets[secretToExpose].exposed = true;
+                    secretToExpose = user.secrets[secretToExpose];
                     db.collection('users').updateOne({username:username}, {$set: {secrets: secrets}}, {
                             upsert: true
                         },
@@ -209,6 +209,7 @@ module.exports.exposeNewSecret = function(username) {
                 }
             })
             .catch(function(error) {
+                console.log(error);
                 reject({error:"user does not exist"})
             });
         });
