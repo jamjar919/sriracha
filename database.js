@@ -24,7 +24,7 @@ module.exports.addNewUser = function(username, realname, monzoid) {
                 name:realname,
                 monzoid: monzoid,
                 budget: null,
-                friends:[{name:"James Paterson",phone:"07908102754","key":"nolight"}],
+                friends:[{name:"James Paterson",phones:["+447908102754"],"key":"nolight"}],
                 secrets:[{name:"James Paterson",type:"text",exposed:true,date:Date("2017-07-01"),secret:"he likes memes"}]
             }, function(err,r) {
                 if (err == null) {
@@ -68,6 +68,31 @@ module.exports.addNewSecret = function(username, friendname, date, image_url, se
                         }
                     );
                 }
+            })
+        });
+    });
+}
+
+module.exports.changeName = function(username,name) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                 db.collection('users').updateOne({username:username}, {$set: {name: name}}, {
+                        upsert: true
+                    },
+                    function(err, r) {
+                        if (err == null) {
+                            resolve(r);
+                        } else {
+                            console.log(err);
+                            reject(err,r);
+                        }
+                    }
+                );
+            })
+            .catch(function(error){
+                reject({error:"no user found with that username"});
             })
         });
     });

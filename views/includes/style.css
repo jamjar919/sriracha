@@ -10,6 +10,13 @@
   margin: 10px 0px;
 }
 
+.cardthang .card-img-top {
+    height: auto;
+    width: 50%;
+    display: block;
+    margin: 0 auto;
+}
+
 /*upload images*/
 
 #upload_img_container {
