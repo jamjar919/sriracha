@@ -151,6 +151,47 @@ module.exports.addNewBudget = function(username,amount,end,done,completed) {
     });
 }
 
+
+module.exports.exposeNewSecret = function(username) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({username:username})
+            .then(function(user) {
+                var secrets = user.secrets;
+                var i = 0;
+                var secretToExpose = null;
+                while (i < user.secrets.length) {
+                    if (user.secrets[i].exposed == false) {
+                        secretToExpose = i;
+                    }
+                    i++;
+                }
+                if (secretToExpose != null) {               
+                    secretToExpose = user.secrets[i];
+                    secrets[i].exposed = true;
+                    db.collection('users').updateOne({username:username}, {$set: {secrets: secrets}}, {
+                            upsert: true
+                        },
+                        function(err, r) {
+                            if (err == null) {
+                                resolve(secretToExpose);
+                            } else {
+                                console.log(err);
+                                reject(err,r);
+                            }
+                        }
+                    ); 
+                } else {
+                    reject({error:"no secrets to reveal!"});
+                }
+            })
+            .catch(function(error) {
+                res.send({error:"user does not exist"})
+            });
+        });
+    });
+}
+
 module.exports.addToBudget = function(username,amount) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
@@ -159,7 +200,7 @@ module.exports.addToBudget = function(username,amount) {
                 console.log(data);
                 var newBudget = data.budget;
                 if (newBudget != null) {
-                    newBudget.value = newBudget.value + amount; 
+                    newBudget.value = newBudget.value + parseFloat(amount); 
                     db.collection('users').updateOne({username:username}, {$set: {budget: newBudget}}, {
                             upsert: true
                         },
