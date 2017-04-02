@@ -152,17 +152,15 @@ module.exports = function() {
      **/
     
     // Store the user budget
-    app.post('/user/:user/budget', function(req, res) {
+    app.post('/user/:user/api/budget/new/', function(req, res) {
         console.log(req.body);
         var parameters = {
-            user: req.params.user,
+            username: req.params.user,
             amount: req.body.amount,
             end: req.body.end,
-            done: false,
-            completed: "none"
         }
         // store these in the database
-        db.addNewBudget(parameters.user, parameters.amount, parameters.end, parameters.done, parameters.completed)
+        db.addNewBudget(parameters.username, parameters.amount, parameters.end)
         .then(function(data) {
             res.send(JSON.stringify({
                 "response": "ok",
@@ -171,8 +169,8 @@ module.exports = function() {
         }).catch(function(data){
             // handle error here.
             console.log("wtf")
+            res.send(data);
         });
-        console.log("ayy");
     });
     
     
@@ -192,6 +190,19 @@ module.exports = function() {
         } else {
             res.send(JSON.stringify({"error":"Must supply an amount as a GET parameter"}));
         }
+    });
+    
+    // Add an amount to the user budget (like if they spent this amount of money)
+    app.get("/user/:user/api/budget/clear/", function(req, res) {
+        console.log("clearing budget");
+        var username = req.params.user;
+        db.clearBudget(username)
+        .then(function(data) {
+            req.send(data);
+        })
+        .catch(function(data) {
+            res.send(data);
+        })
     });
 
     return app;
