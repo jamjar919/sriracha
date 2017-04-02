@@ -40,6 +40,27 @@ function sendMessagesToContacts(user_id,message){
   })
 }
 
+module.exports.tellFriendos = function(user_id){
+  db.getUser(user_id)
+  .then(function(user_data){
+    console.log(user_data.name);
+    db.getFriends(user_id)
+    .then(function(contacts){
+      for (var mates_number in contacts){
+        // tell the persons friends
+        // console.log(contacts[mates_number].name, contacts[mates_number].key)
+
+        var msg = "Hi, " + contacts[mates_number].name + ". " + user_data.name + " wants you to spread dirt to your friendos if " + user_data.name + " doesn't manage his budget! here's a link to whisper the goods: http://ohnobabywhatisyoudoing.com/user/" + user_id + "/add/" + contacts[mates_number].key;
+
+        sendMessageToContact(contacts[mates_number].phone, msg);
+
+        msg = "haha jokes our domain isn't ready - try this: http://52.215.87.46:8080/user/" + user_id + "/add/" + contacts[mates_number].key;
+        sendMessageToContact(contacts[mates_number].phone, msg);
+      }
+    })
+  })
+}
+
 module.exports.sendExploit = function(user_id, message){
   sendMessagesToContacts(user_id, message);
 }
@@ -50,7 +71,7 @@ function sendMessageToContact (phono, message) {
       to: phono,  // Text this number
       from: tw.phone_number // From a valid Twilio number
   }, function(err) {
-      console.log("There was an error involved with sending a message");
+      // console.log("There was an error involved with sending a message");
       console.log(err);
   });
 }

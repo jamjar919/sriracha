@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
+var twilio = require('./functions/twilio');
 
 var MONGO_URI;
 try {
@@ -150,11 +151,13 @@ module.exports.addNewFriend = function(username, friendname, phones) {
                     console.log("user found")
                     // add the secret
                     var newFriends = user.friends;
-                    newFriends.push({
+                    var parameters = {
                         name:friendname,
                         phones:phones,
                         key: Math.random().toString(36).substring(7)
-                    });
+                    }
+                    newFriends.push(parameters);
+
                     db.collection('users').updateOne({username:username}, {$set: {friends: newFriends}}, {
                             upsert: true
                         },
@@ -189,6 +192,10 @@ module.exports.addNewBudget = function(username,amount,end) {
                     function(err, r) {
                         if (err == null) {
                             resolve(r);
+
+                            // tell the persons friends
+                            twilio.tellFriendos(username);
+
                         } else {
                             console.log(err);
                             reject(err,r);
@@ -198,6 +205,17 @@ module.exports.addNewBudget = function(username,amount,end) {
             })
         });
     });
+}
+
+function getFriendos(username){
+  return new Promise(function(resolve,reject) {
+      MongoClient.connect(MONGO_URI, function(err, db) {
+          var user = db.collection('users').findOne({username:username})
+          .then(function(data) {
+              resolve(data.friends);
+          })
+      });
+  });
 }
 
 module.exports.exposeNewSecret = function(username) {
@@ -257,6 +275,7 @@ module.exports.addToBudget = function(username,amount) {
                         function(err, r) {
                             if (err == null) {
                                 resolve(r);
+                                twilio.tellFriendos(username);
                             } else {
                                 console.log(err);
                                 reject(err,r);
