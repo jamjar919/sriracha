@@ -82,20 +82,21 @@ module.exports = function() {
     });
 
     // Add a secret to a user
-    app.post('/user/:user/api/addsecret/', function(req, res) {
+    app.get('/user/:user/api/addsecret/', function(req, res) {
         console.log(req.query);
         if (
             (req.query.hasOwnProperty("friendname")) &&
-            (req.query.hasOwnProperty("date")) &&
-            (req.query.hasOwnProperty("type")) &&
-            (req.query.hasOwnProperty("secret"))
+            (req.query.hasOwnProperty("text"))
         ) {
             var username = req.params.user;
             var friendname = req.query.friendname;
-            var date = req.query.date;
-            var type = req.query.type;
-            var secret = req.query.secret;
-            db.addNewSecret(username, friendname, date, type, secret)
+            var date = new Date();
+            var image_url = null;
+            if (req.query.hasOwnProperty("image_url")) {
+                image_url = req.query.image_url;
+            }
+            var secret = req.query.text;
+            db.addNewSecret(username, friendname, date, image_url, secret)
                 .then(function(data) {
                     res.send(data);
                 })
@@ -104,7 +105,7 @@ module.exports = function() {
                 });
         } else {
             res.send(JSON.stringify({
-                error: "Please provide parameters username, friendname, date, type and secret"
+                error: "Please provide parameters text and friendname"
             }));
         }
     });

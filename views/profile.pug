@@ -18,11 +18,20 @@ block container
 		each item in secrets
 			if item.exposed == true
 				- numSecrets += 1
-				.card.cardthang
-					.card-block
-						h4.card-title #{item.secret}
-						h6.card-subtitle.mb-2.text-muted #{item.date}
-						p.card-text #{item.cause}
+				if item.image_url == null
+					.card.cardthang
+						.card-block
+							h4.card-title #{item.secret}
+							h6.card-subtitle.mb-2.text-muted #{item.date}
+							p.card-text #{item.cause}
+				else
+					.card.cardthang
+						img.card-img-top(src=item.image_url)
+						.card-block
+							h4.card-title #{item.secret}
+							h6.card-subtitle.mb-2.text-muted #{item.date}
+							p.card-text #{item.cause}
+					
 		if numSecrets < 1
 			p #{user} has been a good boy and not overspent yet!
 		else
