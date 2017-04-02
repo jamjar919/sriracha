@@ -87,6 +87,20 @@ module.exports.addNewSecret = function(username, friendname, date, type, secret)
     });
 }
 
+module.exports.monzoIdToUsername = function(monzoid) {
+    return new Promise(function(resolve,reject) {
+        MongoClient.connect(MONGO_URI, function(err, db) {
+            db.collection('users').findOne({monzoid:monzoid})
+            .then(function(user) {
+                resolve(user.username);
+            })
+            .catch(function(error){
+                reject({error:"no user found for that monzo id"});
+            })
+        });
+    });
+}
+
 module.exports.addNewFriend = function(username, friendname, phones) {
     return new Promise(function(resolve,reject) {
         MongoClient.connect(MONGO_URI, function(err, db) {
