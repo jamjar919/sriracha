@@ -25,49 +25,50 @@ module.exports = function(){
         .then(function(result){
           console.log("got budget:",result);
 
-          var end_date = new Date(result.end);
-          if (end_date > date_updated){
-            console.log("date is within the budget range");
-            if (result.value += amount > result.value){
-              console.log("user overspent");
+          if(result.end){
+            var end_date = new Date(result.end);
+            if (end_date > date_updated){
+              console.log("date is within the budget range");
+              if (result.value += amount > result.value){
+                console.log("user overspent");
 
-              db.exposeNewSecret(username)
-              .then(function(data){
-                console.log("user has secret exposed");
-                // do twilio shit
+                db.exposeNewSecret(username)
+                .then(function(data){
+                  console.log("user has secret exposed");
+                  // do twilio shit
 
+                  console.log(data);
+                  var msg = "Your mate " + data.owner + " has exposed a secret: " + data.secret;
+                  if (data.image_url){
+                    msg += " " + data.image_url;
+                  }
+                  console.log(msg);
+                  twilio.sendExploit(username, msg);
+                })
+                .catch(function(error){
+                  console.log("got some errors here:", error)
+                })
 
-
-                console.log(data);
-                var msg = "Your mate" + "nnoob" + " has exposed a secret: " + data.secret;
-                if (data.image_url){
-                  msg += " " + data.image_url;
-                }
-                console.log(msg);
-                // twilio.sendExploit(username, msg);
-              })
-              .catch(function(error){
-                console.log("got some errors here:", error)
-              })
-
-              // db.clearBudget(username).then(function(data){
-              //   console.log("user budget is now reset");
-              // })
+                db.clearBudget(username).then(function(data){
+                  console.log("user budget is now reset");
+                })
+              }
+              else {
+                console.log("adding to the users budget");
+                db.addToBudget(username, amount)
+                .then(function(data){
+                  console.log("user amount increased");
+                })
+              }
+            } else {
+              console.log("we surpassed the date tho")
+              db.clearBudget(username);
             }
-            else {
-              console.log("adding to the users budget");
-              db.addToBudget(username, amount)
-              .then(function(data){
-                console.log("user amount increased");
-              })
-            }
-          } else {
-            console.log("we surpassed the date tho")
-            // db.clearBudget(username);
           }
+
         })
         .catch(function(error){
-          console.log('wtf',error);
+          console.log('we found an error',error);
         })
       })
       .catch(function(error){
