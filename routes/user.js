@@ -70,6 +70,7 @@ module.exports = function() {
                 res.render('profile', parameters);
             })
             .catch(function(error) {
+                console.log(error);
                 res.send(error)
             });
     });
@@ -78,7 +79,12 @@ module.exports = function() {
     app.get('/user/:user/add/:key/', function(req, res) {
         var parameters = {
             user: req.params.user,
-            key: req.params.key
+            key: req.params.key,
+            success: null
+        }
+        console.log(req.query);
+        if (req.query.hasOwnProperty("success")) {
+            parameters.success = req.query.success;
         }
         db.isValidAddSecretKey(parameters.user, parameters.key)
         .then(function(friend){
@@ -126,6 +132,7 @@ module.exports = function() {
     // Add a secret to a user
     app.get('/user/:user/api/addsecret/', function(req, res) {
         console.log(req.query);
+        var key = req.query.key
         if (
             (req.query.hasOwnProperty("friendname")) &&
             (req.query.hasOwnProperty("text"))
@@ -140,10 +147,11 @@ module.exports = function() {
             var secret = req.query.text;
             db.addNewSecret(username, friendname, date, image_url, secret)
                 .then(function(data) {
-                    res.send(data);
+                    res.redirect("/user/"+username+"/add/"+key+"/?success=true");
                 })
                 .catch(function(error) {
-                    res.send(error);
+                    console.log(data);
+                    res.redirect("/user/"+username+"/add/"+key+"/?success=false");
                 });
         } else {
             res.send(JSON.stringify({
@@ -188,10 +196,12 @@ module.exports = function() {
             var phones = req.body.phoneNumbers;
             db.addNewFriend(username, friendname, phones)
                 .then(function(data) {
-                    res.send(data);
+                    console.log(data);
+                    res.send(data)
                 })
                 .catch(function(error) {
-                    res.send(error);
+                    console.log(data);
+                    res.send(error)
                 });
         } else {
             res.send(JSON.stringify({
