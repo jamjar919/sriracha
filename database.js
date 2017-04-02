@@ -222,6 +222,7 @@ module.exports.exposeNewSecret = function(username) {
                         },
                         function(err, r) {
                             if (err == null) {
+                                secretToExpose.owner = user.name;
                                 resolve(secretToExpose);
                             } else {
                                 console.log(err);
