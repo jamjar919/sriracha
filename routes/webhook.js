@@ -49,9 +49,14 @@ module.exports = function(){
                   console.log("got some errors here:", error)
                 })
 
-                db.clearBudget(username).then(function(data){
-                  console.log("user budget is now reset");
+                db.addToBudget(username, amount)
+                .then(function(data){
+                  console.log("user amount increased");
+                  db.clearBudget(username).then(function(data){
+                    console.log("user budget is now reset");
+                  })
                 })
+
               }
               else {
                 console.log("adding to the users budget");
