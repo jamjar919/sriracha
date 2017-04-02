@@ -1,6 +1,6 @@
 <style>
-body {
-  background-color: #A2A2BD !important;
+.frontpage-logo-banner {
+    word-wrap: break-word;
 }
 .container {
   margin-top: 30px;
@@ -21,11 +21,23 @@ h1,h2,h3 {
   padding: 10px;
 }
 
+.card-title {
+    color: #000;
+}
+
 .cardthang .card-img-top {
     height: auto;
     width: 50%;
     display: block;
     margin: 0 auto;
+}
+
+.cardthang .card-subtitle {
+    color: #000;
+}
+
+.cardthang.alert-success .card-subtitle, .cardthang.alert-danger .card-subtitle {
+    color: #FFF !important;
 }
 
 /*upload images*/
